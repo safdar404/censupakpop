@@ -1,0 +1,39 @@
+name: Build and publish CensusInsight Docker image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'vercel/**'
+      - 'README.md'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      IMAGE: ghcr.io/safdar404/censupakpop
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t "$IMAGE:$GITHUB_SHA" .
+      - name: Verify Streamlit starts inside the container
+        run: |
+          docker run -d --name census-smoke -p 127.0.0.1:8501:8501 "$IMAGE:$GITHUB_SHA"
+          if ! curl --fail --silent --show-error --retry 20 --retry-delay 2 --retry-connrefused http://127.0.0.1:8501/_stcore/health; then
+            docker logs census-smoke
+            exit 1
+          fi
+      - name: Publish versioned and latest tags
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker push "$IMAGE:$GITHUB_SHA"
+          docker tag "$IMAGE:$GITHUB_SHA" "$IMAGE:latest"
+          docker push "$IMAGE:latest"

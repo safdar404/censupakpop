@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CensusInsight PK - Pakistan Census 2023 Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>/* required styles */
+
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+/* Prevents IE11 from highlighting tiles in blue */
+.leaflet-tile::selection {
+	background: transparent;
+}
+/* Safari renders non-retina tile on retina better with this, but Chrome is worse */
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+/* hack that prevents hw layers "stretching" when loading new tiles */
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+/* .leaflet-container svg: reset svg max-width decleration shipped in Joomla! (joomla.org) 3.x */
+/* .leaflet-container img: map is broken in FF if you have max-width: 100% on tiles */
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	/* Fallback for FF which doesn't support pinch-zoom */
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+
+.leaflet-pane         { z-index: 400; }
+
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: url(#default#VML);
+	display: inline-block;
+	position: absolute;
+	}
+
+
+/* control positioning */
+
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+
+
+/* zoom and fade animations */
+
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+
+
+/* cursors */
+
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+
+/* marker & overlays interactivity */
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+
+/* visual tweaks */
+
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+
+
+/* general typography */
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+
+
+/* general toolbar styles */
+
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+
+/* zoom control */
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+
+
+/* layers control */
+
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-control-layers-toggle {
+	background-image: url(images/layers.png);
+	width: 36px;
+	height: 36px;
+	}
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: url(images/layers-2x.png);
+	background-size: 26px 26px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+
+/* Default icon URLs */
+.leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
+	background-image: url(images/marker-icon.png);
+	}
+
+
+/* attribution and scale controls */
+
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+
+
+/* popup */
+
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+
+	margin: -10px auto 0;
+	pointer-events: auto;
+
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+
+
+/* div icon */
+
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+
+
+/* Tooltip */
+/* Base styles for the element that has a tooltip */
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+
+/* Directions */
+
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+
+/* Printing */
+	
+@media print {
+	/* Prevent printers from removing background-images of controls. */
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+</style>
+<style>
+:root{
+ --ink:#0f172a;--ink2:#475569;--ink3:#64748b;--line:#e8eaf2;--bg:#f6f7fb;--card:#fff;
+ --punjab:#2563eb;--sindh:#f43f5e;--kp:#10b981;--balochistan:#f59e0b;--ict:#8b5cf6;
+ --violet:#7c3aed;--fuchsia:#d946ef;--pink:#ec4899;--orange:#f97316;--teal:#14b8a6;--green:#00a86b;
+ --grad:linear-gradient(120deg,#7c3aed 0%,#d946ef 45%,#f97316 100%);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Plus Jakarta Sans",Inter,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 22px 60px}
+/* ---------- hero */
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:28px 32px;color:#fff;
+ background:radial-gradient(600px 300px at 10% 0%,rgba(217,70,239,.55),transparent 60%),radial-gradient(700px 360px at 95% 10%,rgba(249,115,22,.45),transparent 60%),
+ radial-gradient(800px 400px at 60% 120%,rgba(20,184,166,.45),transparent 60%),linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%)}
+.hero:after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.18) 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(90deg,transparent,#000 70%);pointer-events:none}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;font-weight:700;color:#f5d0fe}
+.hero h1{margin:6px 0 6px;font-size:2.3rem;font-weight:800;letter-spacing:-.02em}
+.hero h1 span{background:linear-gradient(90deg,#fde68a,#f9a8d4,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;color:#e0e7ff;max-width:800px;line-height:1.55}
+.chip{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 13px;font-size:.78rem;margin:14px 6px 0 0;backdrop-filter:blur(4px)}
+/* ---------- hero globe */
+.hero > :not(.hero-globe){position:relative;z-index:2}
+.hero-globe{position:absolute;right:36px;top:50%;width:260px;height:260px;transform:translateY(-50%);z-index:1;pointer-events:none;animation:hgfloat 6s ease-in-out infinite;filter:drop-shadow(0 18px 30px rgba(15,10,60,.55))}
+@keyframes hgfloat{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 10px))}}
+@media(min-width:900px){.hero{padding-right:320px}}
+@media(min-width:620px) and (max-width:899px){.hero{padding-right:220px}.hero-globe{width:190px;height:190px;right:18px}}
+@media(max-width:619px){.hero-globe{display:none}}
+/* ---------- nav */
+nav{position:sticky;top:0;z-index:1000;background:rgba(246,247,251,.9);backdrop-filter:blur(10px);margin:14px -22px 18px;padding:10px 22px;display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line)}
+nav a{white-space:nowrap;text-decoration:none;color:var(--ink2);font-weight:700;font-size:.84rem;padding:8px 14px;border-radius:999px;transition:.15s}
+nav a:hover{background:#eef0f8;color:var(--ink)}
+nav a.on{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+nav a.new:after{content:"NEW";font-size:.58rem;margin-left:6px;padding:1px 5px;border-radius:4px;background:#fde68a;color:#92400e;vertical-align:2px}
+nav a.on.new:after{background:rgba(255,255,255,.3);color:#fff}
+.view{display:none;animation:fade .35s ease}.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:1.7rem;font-weight:800;margin:2px 0 4px;letter-spacing:-.01em}
+.mod{display:inline-block;font-weight:800;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--ink2);margin:0 0 16px;line-height:1.5}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}.g32{grid-template-columns:3fr 2fr}.g23{grid-template-columns:2fr 3fr}
+@media(max-width:980px){.g5{grid-template-columns:repeat(2,1fr)}.g4,.g3{grid-template-columns:1fr 1fr}.g2,.g32,.g23{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px -12px rgba(76,29,149,.12)}
+.card h3{margin:0 0 10px;font-size:1rem;font-weight:800}
+.kpi{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;overflow:hidden;box-shadow:0 8px 24px -14px rgba(76,29,149,.25)}
+.kpi:before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--c,var(--violet))}
+.kpi .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:18px;margin-bottom:10px;background:color-mix(in srgb,var(--c) 14%,#fff)}
+.kpi .l{color:var(--ink2);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kpi .v{font-size:clamp(1.3rem,2.3vw,1.95rem);font-weight:800;margin-top:2px;letter-spacing:-.02em}
+.kpi .s{color:var(--ink3);font-size:.8rem}
+.chart{width:100%;height:390px}
+.insight{border-left:4px solid var(--violet);background:linear-gradient(90deg,#f5f3ff,#fff);padding:10px 14px;border-radius:0 12px 12px 0;margin:7px 0;line-height:1.5}
+.insight.ai{border-left-color:var(--fuchsia);background:linear-gradient(90deg,#fdf4ff,#fff)}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th{text-align:left;color:var(--ink2);font-weight:700;border-bottom:1px solid var(--line);padding:7px 8px;position:sticky;top:0;background:#fff;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+td{padding:7px 8px;border-bottom:1px solid #f1f2f7}
+tr:hover td{background:#faf8ff}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{max-height:360px;overflow:auto}
+select,input[type=text]{font:inherit;padding:9px 12px;border:1px solid #d9dcea;border-radius:12px;background:#fff;min-width:200px}
+input[type=range]{width:100%;accent-color:var(--violet)}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;background:var(--grad);color:#fff;cursor:pointer;box-shadow:0 6px 16px -6px rgba(217,70,239,.6)}
+button.ghost{background:#fff;color:var(--ink);border:1px solid #d9dcea;font-weight:600;font-size:.84rem;padding:8px 10px;text-align:left;box-shadow:none}
+button.ghost:hover{border-color:var(--violet);color:var(--violet)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+/* ---------- globe */
+.globe-card{position:relative;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 50% 45%,#1e1b4b 0%,#0b1026 55%,#050816 100%);min-height:600px;color:#e2e8f0}
+.globe-card .stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#c4b5fd,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#fff,transparent),radial-gradient(1px 1px at 85% 65%,#f9a8d4,transparent),radial-gradient(1px 1px at 10% 70%,#a5f3fc,transparent),radial-gradient(1px 1px at 55% 50%,#fff,transparent),radial-gradient(1px 1px at 92% 90%,#fff,transparent),radial-gradient(1px 1px at 30% 10%,#fde68a,transparent);background-size:300px 300px;opacity:.7;animation:twinkle 6s ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.35}}
+#globe{display:block;margin:0 auto;cursor:grab;position:relative}
+#globe:active{cursor:grabbing}
+.globe-ui{position:absolute;left:22px;top:20px;z-index:2;max-width:330px}
+.globe-ui h3{margin:0;font-size:1.35rem;font-weight:800;color:#fff}
+.globe-ui p{margin:6px 0 12px;color:#c7d2fe;font-size:.9rem;line-height:1.5}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:6px 12px;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:none}
+.pchip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pchip.on{background:rgba(255,255,255,.2);border-color:#fff}
+.gbtns{position:absolute;left:22px;bottom:20px;z-index:2;display:flex;gap:8px}
+.gbtns button{padding:8px 14px;font-size:.84rem}
+.gbtns button.dim{background:rgba(255,255,255,.12);box-shadow:none;border:1px solid rgba(255,255,255,.25)}
+.pcard{position:absolute;right:22px;top:20px;z-index:2;width:290px;background:rgba(15,23,42,.72);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px);border-radius:18px;padding:16px;transition:.25s}
+.pcard .t{font-size:1.15rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.pcard .t i{width:12px;height:12px;border-radius:50%}
+.pcard .big{font-size:2rem;font-weight:800;margin:6px 0 2px;color:#fff}
+.pcard .mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pcard .mini div{background:rgba(255,255,255,.07);border-radius:10px;padding:8px}
+.pcard .mini b{display:block;font-size:1.05rem;color:#fff}
+.pcard .mini span{font-size:.72rem;color:#c7d2fe;text-transform:uppercase;letter-spacing:.05em}
+.bar{height:8px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:4px}
+.bar > i{display:block;height:100%;border-radius:6px}
+.gtip{position:absolute;pointer-events:none;background:#0f172a;color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 10px;border-radius:8px;font-size:.8rem;display:none;z-index:3}
+/* ---------- infographics */
+.bignum{font-size:2.2rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.ig{border-radius:20px;padding:18px;color:#fff;position:relative;overflow:hidden;min-height:150px}
+.ig .lab{font-size:.78rem;opacity:.9;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.ig .desc{font-size:.85rem;opacity:.92;margin-top:6px;line-height:1.4}
+.ig svg.ico{position:absolute;right:-8px;bottom:-8px;width:96px;height:96px;opacity:.22}
+.pcards .card{position:relative;overflow:hidden}
+.pcards .card .stripe{position:absolute;inset:0 0 auto 0;height:6px}
+.pc-head{display:flex;gap:12px;align-items:center}
+.pc-head svg{flex:0 0 96px}
+.pc-name{font-weight:800;font-size:1.1rem}
+.pc-pop{font-size:1.32rem;white-space:nowrap;font-weight:800;letter-spacing:-.02em}
+.stat{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ink2);margin-top:8px}
+.stat b{color:var(--ink)}
+.lbar{height:8px;border-radius:6px;background:#eef0f8;overflow:hidden;margin-top:3px}
+.lbar i{display:block;height:100%;border-radius:6px}
+.people{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px}
+.people span{width:14px;height:14px;border-radius:50%;display:inline-block}
+#bubblemap{width:100%;height:560px}
+#map{height:600px;border-radius:18px;border:1px solid var(--line);background:#eef1f8}
+.legend{background:rgba(255,255,255,.96);border:1px solid #d9dcea;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.6;box-shadow:0 6px 16px -8px rgba(0,0,0,.2)}
+.legend i{display:inline-block;width:22px;height:12px;border-radius:3px;margin-right:8px;vertical-align:middle}
+.chat{height:440px;overflow:auto;padding:4px}
+.msg{padding:10px 14px;border-radius:14px;margin:8px 0;line-height:1.5}
+.msg.u{background:var(--grad);color:#fff;margin-left:20%}
+.msg.a{background:#fff;border:1px solid var(--line);margin-right:5%}
+.badge{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 9px;border-radius:999px;background:#fef3c7;color:#92400e;vertical-align:middle}
+.foot{margin-top:30px;color:var(--ink3);font-size:.82rem;border-top:1px solid var(--line);padding-top:14px;line-height:1.6}
+.loading{padding:60px;text-align:center;color:var(--ink2)}
+.legend-dots{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--ink2);margin-top:6px}
+.legend-dots i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <svg class="hero-globe" id="hero-globe" aria-hidden="true"></svg>
+    <div class="eyebrow">Pakistan Census 2023</div>
+    <h1>CensusInsight <span>PK</span></h1>
+    <p>AI-powered GeoAI analytics on Pakistan's first digital census, the <b>7th Population &amp; Housing Census 2023</b> (Pakistan Bureau of Statistics). Spin the globe, explore every province and district, run projections and ask the AI analyst.</p>
+    <span class="chip">🗺️ 136 districts · 5 provinces</span><span class="chip">🤖 Agentic AI + ML</span>
+  </div>
+  <nav id="nav">
+    <a href="#globe" class="new">🌍 Globe</a><a href="#infographics" class="new">🎨 Infographics</a><a href="#stats-lab" class="new">📐 Statistics Lab</a>
+    <a href="#dashboard">📊 Dashboard</a><a href="#urban-rural">🏙️ Urban vs Rural</a><a href="#density-growth">📈 Density &amp; Growth</a><a href="#gender">👥 Gender &amp; Age</a>
+    <a href="#map-view">🗺️ District Map</a><a href="#ml">🧠 ML Model</a><a href="#projector">🔮 Projector</a><a href="#agent">🤖 AI Agent</a><a href="#ai-insights">✨ AI Insights</a>
+  </nav>
+  <div id="app"><div class="loading">Loading census data…</div></div>
+
+  <!-- ================= GLOBE ================= -->
+  <section class="view" id="v-globe">
+    <div class="globe-card" id="globe-card">
+      <div class="stars"></div>
+      <div class="globe-ui">
+        <div class="eyebrow" style="color:#f0abfc">Interactive 3D globe</div>
+        <h3>Pakistan from orbit</h3>
+        <p>Drag to spin, scroll to zoom. Pick a province to fly there and see its census profile.</p>
+        <div class="pchips" id="pchips"></div>
+      </div>
+      <div class="pcard" id="pcard"></div>
+      <svg id="globe"></svg>
+      <div class="gbtns"><button id="fly">✈️ Fly to Pakistan</button><button class="dim" id="spin">⟳ Auto-spin</button><button class="dim" id="tour">▶ Province tour</button></div>
+      <div class="gtip" id="gtip"></div>
+    </div>
+    <div class="grid g4" id="kpis" style="margin-top:16px"></div>
+    <div class="grid g32" style="margin-top:16px">
+      <div class="card"><h3>Key findings</h3><div id="findings"></div></div>
+      <div class="card"><div id="c-race" class="chart" style="height:420px"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= INFOGRAPHICS ================= -->
+  <section class="view" id="v-infographics">
+    <div class="mod">Geo-infographics</div><h2>Pakistan in numbers</h2><p class="sub">Census 2023 at a glance: who, where and how fast.</p>
+    <div class="grid g5" id="ig-strip"></div>
+    <h2 style="margin-top:26px;font-size:1.3rem">Province profiles</h2>
+    <div class="grid g5 pcards" id="pcards" style="margin-top:8px"></div>
+    <div class="grid g32" style="margin-top:16px">
+      <div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">District bubble map: bubble size = population</h3>
+        <select id="bub-sel"><option value="growth_rate">Colour: growth rate</option><option value="urban_pct">Colour: urban %</option><option value="literacy_rate">Colour: literacy</option><option value="province">Colour: province</option></select></div>
+        <svg id="bubblemap"></svg><div class="legend-dots" id="bub-legend"></div></div>
+      <div class="card"><h3>If Pakistan were 100 people…</h3><div id="people"></div>
+        <h3 style="margin-top:18px">Every day Pakistan adds</h3><div id="clock"></div><h3 style="margin-top:18px">🔥 Fastest-growing districts</h3><div id="fastest"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= STATISTICS LAB ================= -->
+  <section class="view" id="v-stats-lab">
+    <div class="mod">Statistics lab</div><h2>Statistical graphics</h2><p class="sub">Eleven views of the same 136 districts: composition, flows, distributions, correlation and inequality.</p>
+    <div class="grid g2"><div class="card"><div id="s-tree" class="chart" style="height:480px"></div></div><div class="card"><div id="s-sun" class="chart" style="height:480px"></div></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><div id="s-sankey" class="chart" style="height:420px"></div></div><div class="card"><div id="s-radar" class="chart" style="height:420px"></div></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><div id="s-waterfall" class="chart"></div></div><div class="card"><div id="s-violin" class="chart"></div></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><div id="s-corr" class="chart" style="height:470px"></div></div><div class="card"><div id="s-reg" class="chart" style="height:470px"></div><div id="s-reg-note"></div></div></div>
+    <div class="grid g3" style="margin-top:16px"><div class="card"><div id="s-hist" class="chart" style="height:340px"></div></div><div class="card"><div id="s-lorenz" class="chart" style="height:340px"></div></div><div class="card"><div id="s-age" class="chart" style="height:340px"></div></div></div>
+  </section>
+
+  <!-- ================= EXISTING MODULES ================= -->
+  <section class="view" id="v-dashboard">
+    <div class="mod">Module 2</div><h2>National &amp; Provincial Overview</h2><p class="sub">Click a province bar to drill down into its districts.</p>
+    <div class="grid g32"><div class="card"><div id="c-prov" class="chart"></div></div><div class="card"><div id="c-share" class="chart"></div></div></div>
+    <div class="grid g32" style="margin-top:16px"><div class="card"><div id="c-sex" class="chart" style="height:340px"></div></div>
+      <div class="card"><h3 id="drill-title">District drill-down</h3><div class="row"><select id="drill-sel"></select></div><div class="scroll" id="drill-table"></div></div></div>
+    <div class="card" style="margin-top:16px"><div id="c-drill" class="chart" style="height:420px"></div></div>
+  </section>
+
+  <section class="view" id="v-urban-rural">
+    <div class="mod">Module 3</div><h2>Urban vs Rural</h2><p class="sub">Where cities are absorbing growth, and which districts urbanised most since 2017.</p>
+    <div class="row"><label>Province filter</label><select id="ur-sel"></select></div>
+    <div id="ur-insight"></div>
+    <div class="grid g2"><div class="card"><div id="c-urstack" class="chart"></div></div><div class="card"><div id="c-urgrowth" class="chart"></div></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><h3>Top 10 most urbanised</h3><div id="t-urban"></div></div><div class="card"><h3>Top 10 most rural</h3><div id="t-rural"></div></div></div>
+    <div class="card" style="margin-top:16px"><div id="c-dumbbell" class="chart" style="height:520px"></div></div>
+  </section>
+
+  <section class="view" id="v-density-growth">
+    <div class="mod">Module 4</div><h2>Population Density &amp; Growth</h2><p class="sub">How crowded each district is and how fast it is growing (2017→2023).</p>
+    <div class="card"><div id="c-density" class="chart" style="height:460px"></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><h3>Top 10 most dense</h3><div id="t-dense"></div></div><div class="card"><h3>10 least dense</h3><div id="t-sparse"></div></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><h3 id="hg-title">High Growth Zones</h3><div class="scroll" id="t-high"></div></div>
+      <div class="card"><h3 id="lg-title">Low Growth Zones</h3><div id="t-low"></div><div class="insight" style="margin-top:10px">Very slow growth may indicate out-migration, boundary changes or under-counting.</div></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><div id="c-growthprov" class="chart" style="height:340px"></div></div><div class="card"><div id="c-hh" class="chart" style="height:340px"></div></div></div>
+  </section>
+
+  <section class="view" id="v-gender">
+    <div class="mod">Module 5</div><h2>Gender Ratio &amp; Demography</h2><p class="sub">Sex ratio, age structure and the literacy gap.</p>
+    <div class="grid g23"><div class="card"><div id="c-ratio" class="chart"></div></div><div class="card"><h3>Significantly unbalanced districts (&gt;1.5 SD)</h3><div class="scroll" id="t-gender"></div></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><div id="c-age" class="chart"></div></div><div class="card"><div id="c-lit" class="chart"></div></div></div>
+  </section>
+
+  <section class="view" id="v-map-view">
+    <div class="mod">Module 6</div><h2>GeoAI District Map</h2><p class="sub">Choropleth of Pakistan's districts. Hover a district for details. Circles = districts created after the boundary file.</p>
+    <div class="row"><label>Indicator</label><select id="map-sel"></select></div>
+    <div class="grid" style="grid-template-columns:5fr 2fr"><div id="map"></div><div class="card"><h3>Top 10</h3><div id="map-top"></div><h3 style="margin-top:14px">Bottom 10</h3><div id="map-bot"></div></div></div>
+  </section>
+
+  <section class="view" id="v-ml">
+    <div class="mod">Module 7</div><h2>Machine-Learning Growth Model</h2><p class="sub">Four regressors predict each district's annual growth rate from its characteristics (80/20 split + 5-fold CV). Population = pop × (1+rate)<sup>years</sup>.</p>
+    <div class="grid g4" id="ml-kpis"></div>
+    <div class="card" style="margin-top:16px"><h3>Model leaderboard</h3><div id="t-lb"></div></div>
+    <div class="grid g2" style="margin-top:16px"><div class="card"><div id="c-pva" class="chart" style="height:420px"></div></div><div class="card"><div id="c-imp" class="chart" style="height:420px"></div></div></div>
+  </section>
+
+  <section class="view" id="v-projector">
+    <div class="mod">Module 8</div><h2>Population Projector</h2><p class="sub">Pick a district, set a growth scenario, and see the 2030 and 2035 projection.</p>
+    <div class="grid g23">
+      <div class="card">
+        <div class="row"><select id="pj-sel" style="width:100%"></select></div>
+        <div id="pj-facts"></div>
+        <div class="row" style="margin-top:12px"><label><input type="radio" name="pjm" value="blend" checked> Blend</label><label><input type="radio" name="pjm" value="model"> ML model</label><label><input type="radio" name="pjm" value="trend"> 2017-23 trend</label></div>
+        <label>Growth rate scenario: <b id="pj-rate-l"></b> % per year</label>
+        <input type="range" id="pj-rate" min="-1" max="8" step="0.05">
+        <div id="pj-note" style="color:var(--ink3);font-size:.84rem"></div>
+      </div>
+      <div class="card"><div class="grid g4" id="pj-kpis"></div><div id="c-pj" class="chart" style="height:360px"></div><div id="pj-insight"></div></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-agent">
+    <div class="mod">Agentic AI</div><h2>AI Census Analyst <span class="badge">browser preview · offline planner</span></h2>
+    <p class="sub">Ask in plain English. The agent picks a tool, runs it on the census data and answers with verified numbers. The full app adds an LLM brain (OpenAI / Groq / Ollama).</p>
+    <div class="grid" style="grid-template-columns:3fr 1fr">
+      <div class="card"><div class="chat" id="chat"></div>
+        <form id="ask" class="row" style="margin:10px 0 0"><input type="text" id="q" placeholder="e.g. top 5 most dense districts in Punjab" style="flex:1"><button>Ask</button></form></div>
+      <div class="card"><h3>Try</h3><div id="examples" class="grid" style="gap:6px"></div></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-ai-insights">
+    <div class="mod">AI layer</div><h2>Anomalies &amp; District Typologies</h2><p class="sub">Unsupervised ML: an Isolation Forest flags unusual districts; K-Means groups districts into policy typologies.</p>
+    <div class="grid g32"><div class="card"><div id="c-anom" class="chart" style="height:440px"></div></div><div class="card"><h3>Flagged districts</h3><div class="scroll" id="t-anom" style="max-height:400px"></div></div></div>
+    <div class="grid g32" style="margin-top:16px"><div class="card"><div id="c-clu" class="chart" style="height:440px"></div></div><div class="card"><h3>Typology profiles</h3><div id="t-clu"></div></div></div>
+  </section>
+
+  <div class="foot">Source: Pakistan Bureau of Statistics, 7th Population &amp; Housing Census 2023, district Tables 1, 5 and 12. Boundaries: GADM via pakdata/gisdata (former FATA merged into KP). World map: Natural Earth via world-atlas. Azad Jammu &amp; Kashmir and Gilgit-Baltistan are not part of the PBS census tables and are shown in grey. Projections assume a constant growth rate and are scenarios, not official forecasts.<br>
+  This is a static web preview. The full Dockerised application adds Excel upload &amp; cleaning (Module 1), live model training, the LLM-powered agent and one-click PDF reports (Module 9).</div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+const PC={"Punjab":"#2563eb","Sindh":"#f43f5e","Khyber Pakhtunkhwa":"#10b981","Balochistan":"#f59e0b","Islamabad (ICT)":"#8b5cf6"};
+const SH={"Punjab":"Punjab","Sindh":"Sindh","Khyber Pakhtunkhwa":"KP","Balochistan":"Balochistan","Islamabad (ICT)":"ICT"};
+const EMO={"Punjab":"🌾","Sindh":"🌊","Khyber Pakhtunkhwa":"⛰️","Balochistan":"🏜️","Islamabad (ICT)":"🏛️"};
+const VIBE=["#7c3aed","#ec4899","#f97316","#14b8a6","#2563eb","#f59e0b","#10b981","#f43f5e"];
+const PLASMA=["#fde047","#fb923c","#f43f5e","#c026d3","#5b21b6"];
+const IND={pop_2023:["Total population (2023)",v=>fmtN(v)],density:["Density (people / km²)",v=>fmtN(v)],growth_rate:["Annual growth 2017-23 (%)",v=>v.toFixed(2)+"%"],
+ urban_pct:["Urban population (%)",v=>v.toFixed(1)+"%"],females_per_100_males:["Females per 100 males",v=>v.toFixed(1)],avg_hh_size:["Average household size",v=>v.toFixed(2)],
+ literacy_rate:["Literacy rate 10+ (%)",v=>v.toFixed(1)+"%"],literacy_female:["Female literacy (%)",v=>v.toFixed(1)+"%"],age_0_14_pct:["Children 0-14 (%)",v=>v.toFixed(1)+"%"],
+ urbanisation_change_pp:["Urbanisation change 2017-23 (pp)",v=>v.toFixed(1)]};
+let D=[],M={},GEO=null,PROV=null,WORLD=null,map=null,layer=null;
+const fmtN=v=>Math.round(v).toLocaleString("en-US");
+const fmtP=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+" M":Math.abs(v)>=1e3?(v/1e3).toFixed(1)+" K":Math.round(v)+"";
+const $=id=>document.getElementById(id);
+const L0={font:{family:"Plus Jakarta Sans, Inter, Segoe UI, sans-serif",size:13,color:"#0f172a"},paper_bgcolor:"rgba(0,0,0,0)",plot_bgcolor:"rgba(0,0,0,0)",margin:{l:10,r:10,t:62,b:10},
+ xaxis:{gridcolor:"#eef0f6",zerolinecolor:"#e2e5ef",automargin:true},yaxis:{gridcolor:"#eef0f6",zerolinecolor:"#e2e5ef",automargin:true},legend:{orientation:"h",x:1,xanchor:"right",y:1.0,yanchor:"bottom"},
+ hoverlabel:{bgcolor:"#0f172a",bordercolor:"#0f172a",font:{color:"#fff"}},title:{x:0,xanchor:"left",y:0.97,font:{size:15,color:"#0f172a"}},colorway:VIBE};
+function plot(id,data,layout={}){const l=JSON.parse(JSON.stringify(L0));for(const k in layout){if(typeof layout[k]==="object"&&!Array.isArray(layout[k])&&l[k])Object.assign(l[k],layout[k]);else l[k]=layout[k];}
+ Plotly.react(id,data,l,{displaylogo:false,responsive:true,modeBarButtonsToRemove:["lasso2d","select2d"]});}
+function table(rows,cols){return "<table><tr>"+cols.map(c=>`<th class="${c[2]?'n':''}">${c[1]}</th>`).join("")+"</tr>"+rows.map((r,i)=>"<tr>"+cols.map(c=>`<td class="${c[2]?'n':''}">${c[0]==='#'?i+1:(c[2]?c[2](r[c[0]]):r[c[0]])}</td>`).join("")+"</tr>").join("")+"</table>";}
+const sortBy=(arr,k,asc)=>[...arr].filter(r=>r[k]!=null).sort((a,b)=>asc?a[k]-b[k]:b[k]-a[k]);
+const kpi=(icon,l,v,s,c)=>`<div class="kpi" style="--c:${c}"><div class="ic">${icon}</div><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+const cagr=(a,b)=>(Math.pow(a/b,1/6)-1)*100;
+const sum=(a,k)=>a.reduce((s,r)=>s+(r[k]||0),0);
+const prov=name=>M.provinces.find(p=>p.province===name);
+
+async function init(){
+ const j=u=>fetch(u).then(r=>r.json());
+ const [c,g,pv,w]=await Promise.all([j("data/census.json"),j("data/geo.json"),j("data/provinces.json"),j("data/world.json")]);
+ D=c.districts;M=c.meta;GEO=g;PROV=pv;WORLD=w;$("app").innerHTML="";
+ try{heroGlobe();}catch(e){console.error(e);}
+ window.addEventListener("hashchange",route);route();
+}
+const drawn={};
+function route(){
+ const h=(location.hash||"#globe").slice(1);const id="v-"+h;
+ if(!document.getElementById(id)){location.hash="#globe";return;}
+ document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id));
+ document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+h));
+ const f={globe:globeView,infographics,"stats-lab":statsLab,dashboard,"urban-rural":urbanRural,"density-growth":densityGrowth,gender,"map-view":mapView,ml,projector,agent,"ai-insights":aiInsights}[h];
+ if(f&&!drawn[h]){f();drawn[h]=true;}
+ if(h==="map-view"&&map)setTimeout(()=>map.invalidateSize(),50);
+ window.dispatchEvent(new Event("resize"));
+}
+
+/* =====================================================  HERO GLOBE  */
+function heroGlobe(){
+ const S=260,c=S/2,R=90,rx=124,ry=30,svg=d3.select("#hero-globe").attr("viewBox",`0 0 ${S} ${S}`);svg.selectAll("*").remove();
+ const defs=svg.append("defs");
+ const oc=defs.append("radialGradient").attr("id","hg-ocean").attr("cx","34%").attr("cy","30%").attr("r","80%");
+ [[0,"#7dd3fc"],[.35,"#4f46e5"],[.75,"#312e81"],[1,"#1e1b4b"]].forEach(([o,k])=>oc.append("stop").attr("offset",o).attr("stop-color",k));
+ const at=defs.append("radialGradient").attr("id","hg-atmo").attr("gradientUnits","userSpaceOnUse").attr("cx",c).attr("cy",c).attr("r",R*1.32);
+ [[.68,"rgba(240,171,252,0)"],[.76,"rgba(240,171,252,.55)"],[.86,"rgba(165,243,252,.18)"],[1,"rgba(165,243,252,0)"]].forEach(([o,k])=>at.append("stop").attr("offset",o).attr("stop-color",k));
+ const sh=defs.append("radialGradient").attr("id","hg-shade").attr("cx","33%").attr("cy","28%").attr("r","85%");
+ [[0,"rgba(255,255,255,.42)"],[.3,"rgba(255,255,255,0)"],[.7,"rgba(2,6,23,.2)"],[1,"rgba(2,6,23,.75)"]].forEach(([o,k])=>sh.append("stop").attr("offset",o).attr("stop-color",k));
+ const rg=defs.append("linearGradient").attr("id","hg-ring").attr("x1","0").attr("x2","1");
+ [[0,"rgba(253,230,138,.1)"],[.5,"rgba(249,168,212,.9)"],[1,"rgba(165,243,252,.1)"]].forEach(([o,k])=>rg.append("stop").attr("offset",o).attr("stop-color",k));
+ const proj=d3.geoOrthographic().scale(R).translate([c,c]).clipAngle(90).rotate([-40,-22]),path=d3.geoPath(proj);
+ svg.append("circle").attr("cx",c).attr("cy",c).attr("r",R*1.32).attr("fill","url(#hg-atmo)");
+ const tilt=`rotate(-16 ${c} ${c})`;
+ const back=svg.append("g").attr("transform",tilt);
+ back.append("path").attr("d",`M${c-rx},${c} A${rx},${ry} 0 0 1 ${c+rx},${c}`).attr("fill","none").attr("stroke","url(#hg-ring)").attr("stroke-width",1.6).attr("opacity",.45);
+ const satB=back.append("circle").attr("r",3).attr("fill","#fde68a").attr("opacity",.5);
+ svg.append("path").datum({type:"Sphere"}).attr("class","hs").attr("fill","url(#hg-ocean)");
+ svg.append("path").datum(d3.geoGraticule10()).attr("class","hgr").attr("fill","none").attr("stroke","rgba(224,231,255,.16)").attr("stroke-width",.5);
+ const land=topojson.feature(WORLD,WORLD.objects.countries).features;
+ svg.append("g").selectAll("path").data(land).join("path").attr("class","hl").attr("fill",d=>d.properties.name==="Pakistan"?"#22c55e":"rgba(196,181,253,.62)").attr("stroke","rgba(255,255,255,.28)").attr("stroke-width",.35);
+ svg.append("g").selectAll("path").data(PROV.features.filter(f=>f.properties.in_census)).join("path").attr("class","hp").attr("fill",d=>PC[d.properties.province]).attr("stroke","#fff").attr("stroke-width",.4);
+ svg.append("path").datum({type:"Sphere"}).attr("class","hs").attr("fill","url(#hg-shade)").attr("stroke","rgba(224,231,255,.35)").attr("stroke-width",.8);
+ const pulse=svg.append("g"),lab=svg.append("text").attr("font-size",10).attr("font-weight",800).attr("fill","#fff").attr("stroke","rgba(15,23,42,.7)").attr("stroke-width",2.5).attr("paint-order","stroke").text("Pakistan");
+ const front=svg.append("g").attr("transform",tilt);
+ front.append("path").attr("d",`M${c+rx},${c} A${rx},${ry} 0 0 1 ${c-rx},${c}`).attr("fill","none").attr("stroke","url(#hg-ring)").attr("stroke-width",2);
+ const satF=front.append("circle").attr("r",4).attr("fill","#fde68a").attr("stroke","#fff").attr("stroke-width",1);
+ const pk=[69.3,30.0];
+ d3.timer(t=>{const r=proj.rotate();proj.rotate([r[0]+0.22,-22]);
+  svg.selectAll("path.hs,path.hgr,path.hl,path.hp").attr("d",path);
+  const vis=d3.geoDistance(pk,[-proj.rotate()[0],-proj.rotate()[1]])<1.4,pp=proj(pk);
+  const k=(t%2200)/2200;
+  pulse.selectAll("circle").data(vis?[0,1]:[]).join("circle").attr("fill","none").attr("stroke","#f0abfc").attr("stroke-width",1.5)
+   .attr("cx",pp[0]).attr("cy",pp[1]).attr("r",(d,i)=>4+((k+i*.5)%1)*22).attr("opacity",(d,i)=>1-((k+i*.5)%1));
+  lab.style("display",vis?null:"none").attr("x",pp[0]+8).attr("y",pp[1]-8);
+  const a=t/1400,sx=c+rx*Math.cos(a),sy=c+ry*Math.sin(a),fr=Math.sin(a)>0;
+  satF.attr("cx",sx).attr("cy",sy).style("display",fr?null:"none");satB.attr("cx",sx).attr("cy",sy).style("display",fr?"none":null);
+ });
+}
+/* =====================================================  GLOBE  */
+let G={};
+function globeView(){
+ const n=M.national;
+ $("kpis").innerHTML=kpi("👥","Population 2023",fmtP(n.population),n.growth_rate.toFixed(2)+"% a year since 2017","#7c3aed")+kpi("🏠","Households",fmtP(n.households),"avg "+n.avg_hh_size.toFixed(2)+" persons","#ec4899")
+  +kpi("🏙️","Urban",n.urban_pct.toFixed(1)+"%","rural "+n.rural_pct.toFixed(1)+"%","#f97316")+kpi("📚","Literacy (10+)",n.literacy_rate.toFixed(1)+"%",n.females_per_100_males.toFixed(1)+" females / 100 males","#14b8a6");
+ $("findings").innerHTML=M.insights.map(s=>`<div class="insight">${s}</div>`).join("");
+ // 2017 vs 2023 dumbbell of provinces
+ const P=[...M.provinces].reverse();
+ plot("c-race",[
+  ...P.map(p=>({type:"scatter",mode:"lines",x:[p.pop_2017,p.pop_2023],y:[SH[p.province],SH[p.province]],line:{color:PC[p.province],width:6},opacity:.35,hoverinfo:"skip",showlegend:false})),
+  {type:"scatter",mode:"markers",name:"2017",x:P.map(p=>p.pop_2017),y:P.map(p=>SH[p.province]),marker:{size:14,color:"#fff",line:{color:P.map(p=>PC[p.province]),width:3}},hovertemplate:"%{y} 2017: %{x:,}<extra></extra>"},
+  {type:"scatter",mode:"markers+text",name:"2023",x:P.map(p=>p.pop_2023),y:P.map(p=>SH[p.province]),marker:{size:16,color:P.map(p=>PC[p.province])},text:P.map(p=>"+"+fmtP(p.pop_2023-p.pop_2017)),textposition:"middle right",textfont:{size:12,color:"#475569"},hovertemplate:"%{y} 2023: %{x:,}<extra></extra>"}],
+  {title:{text:"Province growth 2017 → 2023"},xaxis:{type:"log",tickformat:"~s",range:[6.2,8.42],title:{text:"Population (log scale)"}}});
+ buildGlobe();
+}
+function buildGlobe(){
+ const card=$("globe-card"),W=card.clientWidth,H=600,R=Math.min(W*0.42,262);
+ const svg=d3.select("#globe").attr("width",W).attr("height",H).attr("viewBox",`0 0 ${W} ${H}`);
+ svg.selectAll("*").remove();
+ const defs=svg.append("defs");
+ const oc=defs.append("radialGradient").attr("id","ocean").attr("cx","38%").attr("cy","32%").attr("r","75%");
+ oc.append("stop").attr("offset","0%").attr("stop-color","#3b4cca");oc.append("stop").attr("offset","55%").attr("stop-color","#1e1b6b");oc.append("stop").attr("offset","100%").attr("stop-color","#0b0a33");
+ const at=defs.append("radialGradient").attr("id","atmo");[[0.86,"rgba(167,139,250,0)"],[0.94,"rgba(167,139,250,.35)"],[1,"rgba(236,72,153,0)"]].forEach(([o,c])=>at.append("stop").attr("offset",o).attr("stop-color",c));
+ const glow=defs.append("filter").attr("id","glow").attr("x","-50%").attr("y","-50%").attr("width","200%").attr("height","200%");
+ glow.append("feGaussianBlur").attr("stdDeviation",4).attr("result","b");const fm=glow.append("feMerge");fm.append("feMergeNode").attr("in","b");fm.append("feMergeNode").attr("in","SourceGraphic");
+ const cx=W>900?W*0.5:W/2,cy=H/2+10;
+ const proj=d3.geoOrthographic().scale(R).translate([cx,cy]).clipAngle(90).rotate([-20,-15]);
+ const path=d3.geoPath(proj);
+ svg.append("circle").attr("cx",cx).attr("cy",cy).attr("r",R*1.16).attr("fill","url(#atmo)");
+ svg.append("path").datum({type:"Sphere"}).attr("class","sphere").attr("fill","url(#ocean)").attr("stroke","rgba(165,180,252,.5)");
+ svg.append("path").datum(d3.geoGraticule10()).attr("class","grat").attr("fill","none").attr("stroke","rgba(199,210,254,.13)");
+ const land=topojson.feature(WORLD,WORLD.objects.countries).features;
+ svg.append("g").selectAll("path").data(land).join("path").attr("class","country").attr("fill",d=>d.properties.name==="Pakistan"?"#22305e":"#2e3a73").attr("stroke","rgba(199,210,254,.35)").attr("stroke-width",.5);
+ const provs=svg.append("g").selectAll("path").data(PROV.features).join("path").attr("class","prov")
+  .attr("fill",d=>PC[d.properties.province]||"#94a3b8").attr("fill-opacity",d=>d.properties.in_census?.92:.55)
+  .attr("stroke","#fff").attr("stroke-width",.8).style("cursor","pointer")
+  .on("mousemove",(e,d)=>{const t=$("gtip"),r=card.getBoundingClientRect();const p=prov(d.properties.province);
+     t.style.display="block";t.style.left=(e.clientX-r.left+12)+"px";t.style.top=(e.clientY-r.top+12)+"px";
+     t.innerHTML=p?`<b>${d.properties.province}</b><br>${fmtP(p.pop_2023)} people · ${p.share_pct.toFixed(1)}%`:`<b>${d.properties.province}</b><br>not in PBS census tables`;})
+  .on("mouseleave",()=>$("gtip").style.display="none")
+  .on("click",(e,d)=>{if(PC[d.properties.province])focusProvince(d.properties.province);});
+ const pulse=svg.append("g");
+ const labels=svg.append("g").style("pointer-events","none");
+ G={svg,proj,path,R,cx,cy,provs,pulse,labels,spinning:true,selected:null,scale:R};
+ // label cities
+ const cities=[["Karachi",67.01,24.86],["Lahore",74.35,31.55],["Islamabad",73.05,33.68],["Peshawar",71.58,34.01],["Quetta",67.0,30.18]];
+ G.cities=cities;
+ function render(){svg.selectAll("path.sphere,path.grat,path.country,path.prov").attr("d",path);
+  // labels for provinces + cities only when facing us
+  const r=proj.rotate(),centre=[-r[0],-r[1]];
+  const vis=ll=>d3.geoDistance(ll,centre)<1.35;
+  labels.selectAll("text.pl").data(PROV.features.filter(f=>f.properties.in_census&&f.properties.province!=="Islamabad (ICT)"),d=>d.properties.province).join("text").attr("class","pl")
+   .attr("text-anchor","middle").attr("font-size",G.scale>R*1.6?13:11).attr("font-weight",800).attr("fill","#fff").attr("stroke","rgba(15,23,42,.65)").attr("stroke-width",3).attr("paint-order","stroke")
+   .attr("transform",d=>{const p=proj([d.properties.label_lon,d.properties.label_lat]);return `translate(${p[0]},${p[1]})`;})
+   .style("display",d=>vis([d.properties.label_lon,d.properties.label_lat])&&G.scale>R*1.25?null:"none").text(d=>SH[d.properties.province]);
+  labels.selectAll("g.city").data(cities).join(enter=>{const g=enter.append("g").attr("class","city");g.append("circle").attr("r",3).attr("fill","#fde047").attr("stroke","#0f172a");g.append("text").attr("x",6).attr("y",4).attr("font-size",10.5).attr("fill","#fef9c3").attr("stroke","rgba(15,23,42,.7)").attr("stroke-width",3).attr("paint-order","stroke").text(d=>d[0]);return g;})
+   .attr("transform",d=>{const p=proj([d[1],d[2]]);return `translate(${p[0]},${p[1]})`;}).style("display",d=>vis([d[1],d[2]])&&G.scale>R*5?null:"none");
+  // pulse ring over Pakistan
+  const pk=[69.3,30.0],pp=proj(pk);
+  pulse.selectAll("circle").data(vis(pk)?[0,1]:[]).join("circle").attr("cx",pp[0]).attr("cy",pp[1]).attr("fill","none").attr("stroke","#f0abfc").attr("stroke-width",2);
+ }
+ G.render=render;
+ // pulse animation
+ d3.timer(t=>{const k=(t%2000)/2000;pulse.selectAll("circle").attr("r",(d,i)=>{const kk=(k+i*.5)%1;return 8+kk*G.scale*0.22;}).attr("opacity",(d,i)=>{const kk=(k+i*.5)%1;return 1-kk;});
+  if(G.spinning){const r=proj.rotate();proj.rotate([r[0]+0.18,r[1]]);render();}});
+ svg.call(d3.drag().on("start",()=>{G.spinning=false;setBtn();}).on("drag",e=>{const r=proj.rotate(),k=75/proj.scale();proj.rotate([r[0]+e.dx*k,Math.max(-80,Math.min(80,r[1]-e.dy*k))]);render();}));
+ svg.on("wheel",e=>{e.preventDefault();G.scale=Math.max(R*0.8,Math.min(R*8,G.scale*(e.deltaY<0?1.12:0.89)));proj.scale(G.scale);render();},{passive:false});
+ render();
+ $("pchips").innerHTML=Object.keys(PC).map(p=>`<button class="pchip" data-p="${p}"><i style="background:${PC[p]}"></i>${SH[p]}</button>`).join("");
+ document.querySelectorAll(".pchip").forEach(b=>b.onclick=()=>focusProvince(b.dataset.p));
+ $("fly").onclick=()=>flyTo([69.3,30.0],R*3.1,null);
+ $("spin").onclick=()=>{G.spinning=!G.spinning;if(G.spinning){G.scale=R;proj.scale(R);}setBtn();};
+ $("tour").onclick=tour;
+ showCard(null);
+ setTimeout(()=>{if(G.spinning)flyTo([69.3,30.0],R*3.1,null);},3500);
+}
+function setBtn(){$("spin").textContent=G.spinning?"⏸ Pause spin":"⟳ Auto-spin";}
+function flyTo(ll,scale,provName){
+ G.spinning=false;setBtn();const p=G.proj,r0=p.rotate(),r1=[-ll[0],-ll[1]],s0=p.scale();
+ const ri=d3.interpolate(r0,r1),si=d3.interpolate(s0,scale);
+ d3.transition().duration(1800).ease(d3.easeCubicInOut).tween("fly",()=>t=>{p.rotate(ri(t));G.scale=si(t);p.scale(G.scale);G.render();});
+ G.selected=provName;highlight();showCard(provName);
+}
+function focusProvince(name){const f=PROV.features.find(x=>x.properties.province===name);const c=d3.geoCentroid(f);
+ const b=d3.geoBounds(f),span=Math.max(b[1][0]-b[0][0],b[1][1]-b[0][1]);const scale=Math.min(G.R*24,Math.max(G.R*3.2,G.R*3.1*(14/Math.max(span,0.6))));
+ flyTo(name==="Islamabad (ICT)"?[73.05,33.65]:c,name==="Islamabad (ICT)"?G.R*14:scale,name);}
+function highlight(){const s=G.selected;
+ G.provs.transition().duration(500).attr("fill-opacity",d=>!s?(d.properties.in_census?.92:.55):(d.properties.province===s?1:.28)).attr("stroke-width",d=>d.properties.province===s?2.2:.8)
+  .attr("filter",d=>d.properties.province===s?"url(#glow)":null);
+ document.querySelectorAll(".pchip").forEach(b=>b.classList.toggle("on",b.dataset.p===s));}
+let tourTimer=null;
+function tour(){const names=Object.keys(PC);let i=0;clearInterval(tourTimer);focusProvince(names[0]);$("tour").textContent="⏹ Stop tour";
+ $("tour").onclick=()=>{clearInterval(tourTimer);$("tour").textContent="▶ Province tour";$("tour").onclick=tour;};
+ tourTimer=setInterval(()=>{i++;if(i>=names.length){clearInterval(tourTimer);$("tour").textContent="▶ Province tour";$("tour").onclick=tour;flyTo([69.3,30.0],G.R*3.1,null);return;}focusProvince(names[i]);},4200);}
+function showCard(name){const c=$("pcard");
+ if(!name){const n=M.national;c.innerHTML=`<div class="t"><i style="background:linear-gradient(135deg,#01411c 70%,#fff 70%)"></i>Pakistan</div><div style="color:#c7d2fe;font-size:.8rem">Census 2023 · 136 districts</div><div class="big">${fmtP(n.population)}</div>
+  <div style="color:#c7d2fe;font-size:.85rem">+${fmtP(n.population-n.population_2017)} since 2017 (${n.growth_rate.toFixed(2)}%/yr)</div>
+  <div class="mini"><div><span>Urban</span><b>${n.urban_pct.toFixed(1)}%</b></div><div><span>Literacy</span><b>${n.literacy_rate.toFixed(1)}%</b></div><div><span>Households</span><b>${fmtP(n.households)}</b></div><div><span>Density</span><b>${n.density.toFixed(0)}/km²</b></div></div>
+  <div style="margin-top:12px;font-size:.75rem;color:#c7d2fe">Population share</div>${M.provinces.map(p=>`<div style="display:flex;justify-content:space-between;font-size:.78rem;margin-top:5px"><span>${SH[p.province]}</span><span>${p.share_pct.toFixed(1)}%</span></div><div class="bar"><i style="width:${p.share_pct}%;background:${PC[p.province]}"></i></div>`).join("")}`;return;}
+ const p=prov(name),dist=sortBy(D.filter(r=>r.province===name),"pop_2023").slice(0,3);
+ c.innerHTML=`<div class="t"><i style="background:${PC[name]}"></i>${EMO[name]} ${name}</div><div style="color:#c7d2fe;font-size:.8rem">${p.districts} districts · ${fmtN(p.area_sqkm)} km²</div>
+  <div class="big">${fmtP(p.pop_2023)}</div><div style="color:#c7d2fe;font-size:.85rem">${p.share_pct.toFixed(1)}% of Pakistan · +${p.growth_rate.toFixed(2)}%/yr</div>
+  <div class="mini"><div><span>Urban</span><b>${p.urban_pct.toFixed(1)}%</b></div><div><span>Density</span><b>${p.density.toFixed(0)}/km²</b></div><div><span>Household</span><b>${p.avg_hh_size.toFixed(2)}</b></div><div><span>F / 100 M</span><b>${p.females_per_100_males.toFixed(1)}</b></div></div>
+  <div style="margin-top:10px;font-size:.75rem;color:#c7d2fe">Literacy: male ${p.literacy_male.toFixed(1)}% · female ${p.literacy_female.toFixed(1)}%</div>
+  <div class="bar"><i style="width:${p.literacy_male}%;background:#60a5fa"></i></div><div class="bar"><i style="width:${p.literacy_female}%;background:#f472b6"></i></div>
+  <div style="margin-top:10px;font-size:.75rem;color:#c7d2fe">Largest districts</div>${dist.map(d=>`<div style="display:flex;justify-content:space-between;font-size:.82rem;margin-top:3px"><span>${d.district}</span><b>${fmtP(d.pop_2023)}</b></div>`).join("")}`;}
+
+/* =====================================================  INFOGRAPHICS  */
+const ICON={people:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><circle cx="8" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M2 20c0-4 3-6 6-6s6 2 6 6zM10 20c0-4 3-6 6-6s6 2 6 6z"/></svg>',
+ home:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>',city:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M3 21V9l6-3v15zm7 0V3l8 4v14zm9 0v-9l3 2v7z"/></svg>',
+ child:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="6" r="3"/><path d="M7 22v-6H5l2-6h10l2 6h-2v6z"/></svg>',book:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M4 4h7a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H4zm16 0h-4a3 3 0 0 0-3 3v14a2 2 0 0 1 2-2h5z"/></svg>'};
+function infographics(){const n=M.national,perDay=(n.population-n.population_2017)/6/365,kids=D.reduce((s,r)=>s+r.pop_2023*r.age_0_14_pct/100,0),punj=prov("Punjab");
+ const ig=(bg,lab,num,desc,ic)=>`<div class="ig" style="background:${bg}"><div class="lab">${lab}</div><div class="bignum">${num}</div><div class="desc">${desc}</div>${ICON[ic]}</div>`;
+ $("ig-strip").innerHTML=ig("linear-gradient(135deg,#7c3aed,#c026d3)","People","241.5 M","5th most populous country in the world","people")
+  +ig("linear-gradient(135deg,#ec4899,#f97316)","Added every day",fmtN(perDay),"≈ "+Math.round(perDay/1440)+" new people every minute (2017-23 average)","child")
+  +ig("linear-gradient(135deg,#f97316,#f59e0b)","Children under 15",fmtP(kids),(kids/n.population*100).toFixed(0)+"% of the population is under 15","child")
+  +ig("linear-gradient(135deg,#14b8a6,#2563eb)","Live in cities",n.urban_pct.toFixed(1)+"%","cities grew 3.66%/yr vs 1.88%/yr in villages","city")
+  +ig("linear-gradient(135deg,#2563eb,#7c3aed)","Households",fmtP(n.households),n.avg_hh_size.toFixed(2)+" people per household on average","home");
+ // province cards with silhouettes
+ $("pcards").innerHTML=M.provinces.map(p=>{const f=PROV.features.find(x=>x.properties.province===p.province);
+  const pr=d3.geoMercator().fitSize([96,96],f),pth=d3.geoPath(pr)(f),id="g"+SH[p.province];
+  return `<div class="card"><div class="stripe" style="background:${PC[p.province]}"></div><div class="pc-head"><svg width="96" height="96" viewBox="0 0 96 96"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${PC[p.province]}"/><stop offset="1" stop-color="${PC[p.province]}" stop-opacity=".55"/></linearGradient></defs><path d="${pth}" fill="url(#${id})" stroke="#fff" stroke-width="1"/></svg>
+  <div><div class="pc-name">${EMO[p.province]} ${SH[p.province]}</div><div class="pc-pop" style="color:${PC[p.province]}">${fmtP(p.pop_2023)}</div><div style="font-size:.78rem;color:var(--ink3)">${p.share_pct.toFixed(1)}% of Pakistan</div></div></div>
+  <div class="stat"><span>Growth / yr</span><b>${p.growth_rate.toFixed(2)}%</b></div><div class="lbar"><i style="width:${p.growth_rate/3.5*100}%;background:${PC[p.province]}"></i></div>
+  <div class="stat"><span>Urban</span><b>${p.urban_pct.toFixed(1)}%</b></div><div class="lbar"><i style="width:${p.urban_pct}%;background:${PC[p.province]}"></i></div>
+  <div class="stat"><span>Literacy M / F</span><b>${p.literacy_male.toFixed(0)}% / ${p.literacy_female.toFixed(0)}%</b></div><div class="lbar"><i style="width:${p.literacy_male}%;background:#60a5fa"></i></div><div class="lbar"><i style="width:${p.literacy_female}%;background:#f472b6"></i></div>
+  <div class="stat"><span>Household size</span><b>${p.avg_hh_size.toFixed(2)}</b></div><div class="stat"><span>Children 0-14</span><b>${p.age_0_14_pct.toFixed(1)}%</b></div></div>`;}).join("");
+ // 100 people
+ const counts=M.provinces.map(p=>({p:p.province,n:Math.round(p.share_pct)}));let tot=counts.reduce((s,c)=>s+c.n,0);counts[0].n+=100-tot;
+ $("people").innerHTML=`<div class="people">${counts.map(c=>Array(Math.max(c.n,0)).fill(`<span style="background:${PC[c.p]}" title="${c.p}"></span>`).join("")).join("")}</div>`+
+  `<div class="legend-dots">${counts.map(c=>`<span><i style="background:${PC[c.p]}"></i>${SH[c.p]} ${c.n}</span>`).join("")}</div>`;
+ $("clock").innerHTML=M.provinces.map(p=>{const d=(p.pop_2023-p.pop_2017)/6/365;return `<div class="stat"><span>${EMO[p.province]} ${SH[p.province]}</span><b>+${fmtN(d)} people</b></div><div class="lbar"><i style="width:${d/perDay*100}%;background:${PC[p.province]}"></i></div>`;}).join("");
+ $("fastest").innerHTML=sortBy(D,"growth_rate").slice(0,6).map((r,i)=>`<div class="stat"><span>${i+1}. ${r.district} <span style="color:${PC[r.province]}">●</span> ${SH[r.province]}</span><b>${r.growth_rate.toFixed(2)}%/yr</b></div>`).join("");
+ $("bub-sel").onchange=bubbles;bubbles();
+}
+function bubbles(){const k=$("bub-sel").value,svg=d3.select("#bubblemap"),W=svg.node().clientWidth||700,H=560;svg.attr("viewBox",`0 0 ${W} ${H}`);svg.selectAll("*").remove();
+ const pr=d3.geoMercator().fitExtent([[10,10],[W-10,H-10]],PROV),path=d3.geoPath(pr);
+ svg.append("g").selectAll("path").data(PROV.features).join("path").attr("d",path).attr("fill",d=>d.properties.in_census?(PC[d.properties.province]+"1f"):"#e2e8f0").attr("stroke",d=>PC[d.properties.province]||"#cbd5e1").attr("stroke-width",1.2);
+ const rs=d3.scaleSqrt().domain([0,d3.max(D,r=>r.pop_2023)]).range([0,34]);
+ let col,leg;
+ if(k==="province"){col=r=>PC[r.province];leg=Object.keys(PC).map(p=>`<span><i style="background:${PC[p]}"></i>${SH[p]}</span>`).join("");}
+ else{const vals=D.map(r=>r[k]),ext=k==="growth_rate"?[0.5,5]:d3.extent(vals);const sc=d3.scaleSequential(d3.interpolatePlasma).domain([ext[1],ext[0]]);col=r=>sc(Math.max(ext[0],Math.min(ext[1],r[k])));
+  leg=`<span>${IND[k][0]}:</span>`+[0,.25,.5,.75,1].map(t=>{const v=ext[0]+t*(ext[1]-ext[0]);return `<span><i style="background:${sc(v)}"></i>${IND[k][1](v)}</span>`;}).join("");}
+ const tip=d3.select("body").selectAll("div.btip").data([0]).join("div").attr("class","btip gtip").style("position","fixed");
+ svg.append("g").selectAll("circle").data([...D].sort((a,b)=>b.pop_2023-a.pop_2023)).join("circle").attr("cx",r=>pr([r.lon,r.lat])[0]).attr("cy",r=>pr([r.lon,r.lat])[1]).attr("r",0)
+  .attr("fill",col).attr("fill-opacity",.82).attr("stroke","#fff").attr("stroke-width",1.2)
+  .on("mousemove",(e,r)=>tip.style("display","block").style("left",e.clientX+12+"px").style("top",e.clientY+12+"px").html(`<b>${r.district}</b> · ${SH[r.province]}<br>${fmtN(r.pop_2023)} people<br>Growth ${r.growth_rate.toFixed(2)}% · Urban ${r.urban_pct.toFixed(1)}% · Literacy ${r.literacy_rate.toFixed(1)}%`))
+  .on("mouseleave",()=>tip.style("display","none"))
+  .transition().duration(900).delay((r,i)=>i*6).attr("r",r=>Math.max(2.5,rs(r.pop_2023)));
+ $("bub-legend").innerHTML=leg;}
+
+/* =====================================================  STATISTICS LAB  */
+function statsLab(){const P=M.provinces,provs=Object.keys(PC);
+ // 1 treemap
+ const ids=["Pakistan"],labels=["Pakistan"],parents=[""],values=[0],colors=["#fff"],cd=[null];
+ provs.forEach(p=>{ids.push(p);labels.push(SH[p]);parents.push("Pakistan");values.push(0);colors.push(PC[p]);cd.push(prov(p).growth_rate);});
+ D.forEach(r=>{ids.push("d-"+r.district);labels.push(r.district);parents.push(r.province);values.push(r.pop_2023);colors.push(null);cd.push(r.growth_rate);});
+ const shade=(hex,a)=>{const c=d3.color(hex);c.opacity=a;return c.formatRgb();};
+ plot("s-tree",[{type:"treemap",ids,labels,parents,values,branchvalues:"remainder",customdata:cd,
+  marker:{colors:ids.map((id,i)=>i===0?"#fff":(colors[i]||shade(PC[parents[i]],0.35+0.65*Math.min(1,(cd[i]||0)/5)))),line:{color:"#fff",width:1.5}},
+  texttemplate:"<b>%{label}</b><br>%{value:.3s}",textfont:{color:"#fff"},hovertemplate:"<b>%{label}</b><br>%{value:,} people<br>Growth %{customdata:.2f}%/yr<extra></extra>",pathbar:{visible:true}}],
+  {title:{text:"Treemap: where Pakistanis live (shade = growth rate)"},margin:{l:4,r:4,t:56,b:4}});
+ // 2 sunburst province > division > district
+ const sid=[],sl=[],sp=[],sv=[],sc=[];const divs={};
+ provs.forEach(p=>{sid.push(p);sl.push(SH[p]);sp.push("");sv.push(0);sc.push(PC[p]);});
+ D.forEach(r=>{const dv=r.province+"|"+(r.division||"Other");if(!divs[dv]){divs[dv]=1;sid.push(dv);sl.push(r.division||"Other");sp.push(r.province);sv.push(0);sc.push(shade(PC[r.province],.7));}
+  sid.push("s-"+r.district);sl.push(r.district);sp.push(dv);sv.push(r.pop_2023);sc.push(shade(PC[r.province],.42));});
+ plot("s-sun",[{type:"sunburst",ids:sid,labels:sl,parents:sp,values:sv,branchvalues:"remainder",marker:{colors:sc,line:{color:"#fff",width:1}},maxdepth:2,insidetextorientation:"radial",
+  hovertemplate:"<b>%{label}</b><br>%{value:,} people<br>%{percentRoot:.1%} of Pakistan<extra></extra>"}],{title:{text:"Sunburst: province → division (click to open districts)"},margin:{l:4,r:4,t:56,b:4}});
+ // 3 sankey province -> urban/rural
+ const nodes=provs.map(p=>SH[p]).concat(["Urban","Rural"]),src=[],tgt=[],val=[],lc=[];
+ provs.forEach((p,i)=>{const q=prov(p);src.push(i,i);tgt.push(5,6);val.push(q.urban_pop,q.rural_pop);lc.push(shade(PC[p],.45),shade(PC[p],.25));});
+ plot("s-sankey",[{type:"sankey",arrangement:"snap",node:{label:nodes,color:provs.map(p=>PC[p]).concat(["#7c3aed","#f97316"]),pad:16,thickness:20,line:{color:"#fff",width:1}},
+  link:{source:src,target:tgt,value:val,color:lc,hovertemplate:"%{source.label} → %{target.label}<br>%{value:,} people<extra></extra>"}}],{title:{text:"Sankey: provinces flowing into urban and rural Pakistan"}});
+ // 4 radar normalised
+ const dims=[["urban_pct","Urban %"],["growth_rate","Growth"],["literacy_rate","Literacy"],["avg_hh_size","Household size"],["age_0_14_pct","Youth share"],["females_per_100_males","F/100 M"]];
+ const mm=dims.map(([k])=>[Math.min(...P.map(p=>p[k])),Math.max(...P.map(p=>p[k]))]);
+ plot("s-radar",P.map(p=>({type:"scatterpolar",name:SH[p.province],r:dims.map(([k],i)=>20+80*(p[k]-mm[i][0])/(mm[i][1]-mm[i][0]||1)).concat([0]).slice(0,-1).concat([20+80*(p[dims[0][0]]-mm[0][0])/(mm[0][1]-mm[0][0])]),
+  theta:dims.map(d=>d[1]).concat([dims[0][1]]),fill:"toself",fillcolor:shade(PC[p.province],.12),line:{color:PC[p.province],width:2.5},
+  customdata:dims.map(([k])=>p[k]).concat([p[dims[0][0]]]),hovertemplate:SH[p.province]+"<br>%{theta}: %{customdata:.2f}<extra></extra>"})),
+  {title:{text:"Radar: province profiles (scaled min → max)"},polar:{bgcolor:"rgba(0,0,0,0)",radialaxis:{visible:false,range:[0,105]},angularaxis:{gridcolor:"#e2e5ef"}}});
+ // 5 waterfall
+ plot("s-waterfall",[{type:"waterfall",orientation:"v",x:["2017"].concat(P.map(p=>"+ "+SH[p.province]),["2023"]),measure:["absolute"].concat(P.map(()=>"relative"),["total"]),
+  y:[M.national.population_2017].concat(P.map(p=>p.pop_2023-p.pop_2017),[0]),text:[fmtP(M.national.population_2017)].concat(P.map(p=>"+"+fmtP(p.pop_2023-p.pop_2017)),[fmtP(M.national.population)]),textposition:"outside",
+  connector:{line:{color:"#c4b5fd",dash:"dot"}},increasing:{marker:{color:"#ec4899"}},totals:{marker:{color:"#7c3aed"}},hovertemplate:"%{x}: %{y:,}<extra></extra>"}],
+  {title:{text:"Waterfall: who added the 33.8 M new people (2017 → 2023)"},yaxis:{range:[190e6,250e6],tickformat:"~s"},showlegend:false});
+ // 6 violin
+ plot("s-violin",provs.map(p=>{const s=D.filter(r=>r.province===p);return{type:"violin",name:SH[p],y:s.map(r=>r.growth_rate),text:s.map(r=>r.district),box:{visible:true},meanline:{visible:true},points:"all",jitter:.4,pointpos:0,
+  fillcolor:shade(PC[p],.25),line:{color:PC[p]},marker:{color:PC[p],size:5},hovertemplate:"%{text}: %{y:.2f}%/yr<extra></extra>"};}),{title:{text:"Violin: spread of district growth rates by province"},yaxis:{ticksuffix:"%",range:[-1,10]},showlegend:false});
+ // 7 correlation heatmap
+ const vars=[["growth_rate","Growth"],["urban_pct","Urban %"],["density","Density (log)"],["literacy_rate","Literacy"],["literacy_female","Female lit."],["avg_hh_size","HH size"],["age_0_14_pct","Youth 0-14"],["females_per_100_males","F/100 M"]];
+ const get=(r,k)=>k==="density"?Math.log10(r[k]):r[k];
+ const corr=(a,b)=>{const xs=D.map(r=>get(r,a)),ys=D.map(r=>get(r,b)),mx=d3.mean(xs),my=d3.mean(ys);let s=0,sx=0,sy=0;xs.forEach((x,i)=>{s+=(x-mx)*(ys[i]-my);sx+=(x-mx)**2;sy+=(ys[i]-my)**2;});return s/Math.sqrt(sx*sy);};
+ const Z=vars.map(([a])=>vars.map(([b])=>corr(a,b)));
+ plot("s-corr",[{type:"heatmap",z:Z,x:vars.map(v=>v[1]),y:vars.map(v=>v[1]),zmin:-1,zmax:1,colorscale:[[0,"#7c3aed"],[0.25,"#c4b5fd"],[0.5,"#f8fafc"],[0.75,"#fdba74"],[1,"#ea580c"]],
+  text:Z.map(r=>r.map(v=>v.toFixed(2))),texttemplate:"%{text}",textfont:{size:11},xgap:2,ygap:2,hovertemplate:"%{y} × %{x}<br>r = %{z:.2f}<extra></extra>",colorbar:{thickness:12,len:.8}}],
+  {title:{text:"Correlation matrix across 136 districts (Pearson r)"},yaxis:{autorange:"reversed"},xaxis:{tickangle:-35}});
+ // 8 regression literacy vs youth
+ const xs=D.map(r=>r.age_0_14_pct),ys=D.map(r=>r.literacy_rate),mx=d3.mean(xs),my=d3.mean(ys);let sxy=0,sxx=0,syy=0;xs.forEach((x,i)=>{sxy+=(x-mx)*(ys[i]-my);sxx+=(x-mx)**2;syy+=(ys[i]-my)**2;});
+ const b1=sxy/sxx,b0=my-b1*mx,r2=(sxy*sxy)/(sxx*syy),xr=[d3.min(xs),d3.max(xs)];
+ plot("s-reg",provs.map(p=>{const s=D.filter(r=>r.province===p);return{type:"scatter",mode:"markers",name:SH[p],x:s.map(r=>r.age_0_14_pct),y:s.map(r=>r.literacy_rate),text:s.map(r=>r.district),
+  marker:{size:s.map(r=>7+Math.sqrt(r.pop_2023)/260),color:PC[p],opacity:.85,line:{color:"#fff",width:1}},hovertemplate:"<b>%{text}</b><br>Youth %{x:.1f}% · Literacy %{y:.1f}%<extra></extra>"};})
+  .concat([{type:"scatter",mode:"lines",name:"OLS fit",x:xr,y:xr.map(x=>b0+b1*x),line:{color:"#0f172a",width:2,dash:"dash"},hoverinfo:"skip"}]),
+  {title:{text:"Regression: more children ↔ lower literacy"},xaxis:{title:{text:"Children 0-14 (%)"}},yaxis:{title:{text:"Literacy (%)"}}});
+ $("s-reg-note").innerHTML=`<div class="insight">Each extra percentage point of children is associated with <b>${b1.toFixed(2)}</b> points of literacy (R² = ${r2.toFixed(2)}, n = 136). Correlation, not causation.</div>`;
+ // 9 histogram
+ const g=D.map(r=>r.growth_rate),mg=d3.mean(g),md=d3.median(g);
+ plot("s-hist",[{type:"histogram",x:g,xbins:{start:-1,end:10,size:0.5},marker:{color:"#c026d3",line:{color:"#fff",width:1.5}},hovertemplate:"%{x}%: %{y} districts<extra></extra>"}],
+  {title:{text:"Distribution of growth rates"},xaxis:{ticksuffix:"%"},yaxis:{title:{text:"Districts"}},showlegend:false,bargap:.04,
+   shapes:[{type:"line",x0:mg,x1:mg,yref:"paper",y0:0,y1:1,line:{color:"#f97316",width:2,dash:"dash"}}],annotations:[{x:mg,yref:"paper",y:1,text:"mean "+mg.toFixed(2)+"% · median "+md.toFixed(2)+"%",showarrow:false,xanchor:"left",yanchor:"bottom",font:{size:11,color:"#f97316"}}]});
+ // 10 Lorenz + Gini
+ const pops=D.map(r=>r.pop_2023).sort((a,b)=>a-b),T=d3.sum(pops);let c=0;const lx=[0],ly=[0];pops.forEach((v,i)=>{c+=v;lx.push((i+1)/pops.length*100);ly.push(c/T*100);});
+ let gini=0;for(let i=1;i<lx.length;i++)gini+=(lx[i]-lx[i-1])*(ly[i]+ly[i-1])/2;gini=1-2*gini/10000;
+ plot("s-lorenz",[{type:"scatter",mode:"lines",x:[0,100],y:[0,100],line:{color:"#cbd5e1",dash:"dot"},name:"Perfect equality",hoverinfo:"skip"},
+  {type:"scatter",mode:"lines",x:lx,y:ly,fill:"tonexty",fillcolor:"rgba(124,58,237,.15)",line:{color:"#7c3aed",width:3},name:"Districts",hovertemplate:"Smallest %{x:.0f}% of districts hold %{y:.1f}% of people<extra></extra>"}],
+  {title:{text:`Lorenz curve: Gini = ${gini.toFixed(2)}`},xaxis:{title:{text:"% of districts (smallest first)"},range:[0,100]},yaxis:{title:{text:"% of population"},range:[0,100]},showlegend:false});
+ // 11 age stacked 100%
+ const ag=[["age_0_14_pct","0-14","#f97316"],["age_15_64_pct","15-64","#7c3aed"],["age_65_plus_pct","65+","#14b8a6"]];
+ plot("s-age",ag.map(a=>({type:"bar",orientation:"h",name:a[1],y:P.map(p=>SH[p.province]),x:P.map(p=>p[a[0]]),marker:{color:a[2],line:{color:"#fff",width:1.5}},text:P.map(p=>p[a[0]].toFixed(0)+"%"),textposition:"inside",insidetextanchor:"middle",textfont:{color:"#fff"},hovertemplate:"%{y} "+a[1]+": %{x:.1f}%<extra></extra>"})),
+  {title:{text:"Age structure (100%)"},barmode:"stack",xaxis:{ticksuffix:"%",range:[0,100]},yaxis:{autorange:"reversed"}});
+}
+
+/* =====================================================  MODULES 2-6  */
+function dashboard(){const P=M.provinces,r=[...P].reverse();
+ plot("c-prov",[{type:"bar",orientation:"h",y:r.map(p=>p.province),x:r.map(p=>p.pop_2023),marker:{color:r.map(p=>PC[p.province])},text:r.map(p=>fmtP(p.pop_2023)),textposition:"outside",cliponaxis:false,
+  customdata:r.map(p=>[p.share_pct,p.districts]),hovertemplate:"<b>%{y}</b><br>%{x:,} people<br>Share %{customdata[0]:.1f}%<br>%{customdata[1]} districts<extra></extra>"}],
+  {title:{text:"Population by province (click a bar)"},xaxis:{tickformat:"~s",range:[0,Math.max(...P.map(p=>p.pop_2023))*1.18]},showlegend:false});
+ plot("c-share",[{type:"pie",hole:.58,labels:P.map(p=>SH[p.province]),values:P.map(p=>p.pop_2023),marker:{colors:P.map(p=>PC[p.province]),line:{color:"#fff",width:3}},sort:false,direction:"clockwise",
+  textinfo:"label+percent",textposition:"inside",insidetextorientation:"horizontal",hovertemplate:"<b>%{label}</b><br>%{value:,}<br>%{percent}<extra></extra>"}],
+  {title:{text:"Share of national population"},showlegend:false,uniformtext:{minsize:10,mode:"hide"},annotations:[{text:"<b>"+fmtP(M.national.population)+"</b><br>Pakistan",showarrow:false,font:{size:15}}]});
+ plot("c-sex",[{type:"bar",name:"Male",x:P.map(p=>SH[p.province]),y:P.map(p=>p.male),marker:{color:"#2563eb"},hovertemplate:"%{x}<br>Male %{y:,}<extra></extra>"},
+  {type:"bar",name:"Female",x:P.map(p=>SH[p.province]),y:P.map(p=>p.female),marker:{color:"#ec4899"},hovertemplate:"%{x}<br>Female %{y:,}<extra></extra>"}],{title:{text:"Male vs female by province"},barmode:"group",yaxis:{tickformat:"~s"}});
+ const sel=$("drill-sel");sel.innerHTML=P.map(p=>`<option>${p.province}</option>`).join("");sel.onchange=()=>drill(sel.value);
+ $("c-prov").on("plotly_click",e=>{sel.value=e.points[0].y;drill(sel.value);});drill("Punjab");
+}
+function drill(p){const d=sortBy(D.filter(r=>r.province===p),"pop_2023");
+ $("drill-title").textContent="Districts of "+p;
+ $("drill-table").innerHTML=table(d,[["district","District"],["pop_2023","Population",fmtP],["growth_rate","Growth %",v=>v.toFixed(2)],["urban_pct","Urban %",v=>v.toFixed(1)]]);
+ plot("c-drill",[{type:"bar",x:d.map(r=>r.district),y:d.map(r=>r.pop_2023),marker:{color:d.map(r=>r.growth_rate),colorscale:[[0,"#fde047"],[.5,"#f43f5e"],[1,"#5b21b6"]],cmin:0,cmax:5,colorbar:{title:{text:"Growth %"},thickness:12}},hovertemplate:"<b>%{x}</b><br>%{y:,}<extra></extra>"}],{title:{text:p+": districts by population (colour = growth rate)"},xaxis:{tickangle:-45},yaxis:{tickformat:"~s"}});
+}
+function urbanRural(){const sel=$("ur-sel");sel.innerHTML="<option>All provinces</option>"+M.provinces.map(p=>`<option>${p.province}</option>`).join("");sel.onchange=()=>ur(sel.value);ur("All provinces");}
+function ur(p){const all=p==="All provinces",sub=all?D:D.filter(r=>r.province===p),P=all?M.provinces:M.provinces.filter(x=>x.province===p);
+ const u17=sum(sub.map(r=>({x:r.urban_pct_2017*r.pop_2017/100})),"x"),u=cagr(sum(sub,"urban_pop"),u17),ru=cagr(sum(sub,"rural_pop"),sum(sub,"pop_2017")-u17);
+ $("ur-insight").innerHTML=`<div class="insight"><b>${all?"Pakistan":p}</b>: ${(sum(sub,"urban_pop")/sum(sub,"pop_2023")*100).toFixed(1)}% urban. Urban population grew <b>${u.toFixed(2)}%/yr</b> vs <b>${ru.toFixed(2)}%/yr</b> rural (2017-23).</div>`;
+ const x=P.map(q=>SH[q.province]);
+ plot("c-urstack",[{type:"bar",name:"Urban",x,y:P.map(q=>q.urban_pop),marker:{color:"#7c3aed"},hovertemplate:"%{x}<br>Urban %{y:,}<extra></extra>"},{type:"bar",name:"Rural",x,y:P.map(q=>q.rural_pop),marker:{color:"#f97316",line:{color:"#fff",width:2}},hovertemplate:"%{x}<br>Rural %{y:,}<extra></extra>"}],{title:{text:"Urban and rural population"},barmode:"stack",yaxis:{tickformat:"~s"}});
+ plot("c-urgrowth",[{type:"bar",name:"Urban growth",x,y:P.map(q=>q.urban_growth_rate),marker:{color:"#7c3aed"},hovertemplate:"%{x}<br>Urban %{y:.2f}%/yr<extra></extra>"},{type:"bar",name:"Rural growth",x,y:P.map(q=>q.rural_growth_rate),marker:{color:"#f97316"},hovertemplate:"%{x}<br>Rural %{y:.2f}%/yr<extra></extra>"}],{title:{text:"Annual growth: urban vs rural (migration signal)"},barmode:"group",yaxis:{ticksuffix:"%"}});
+ const cols=k=>[["#","#"],["district","District"],["province","Province",null],[k,k==="urban_pct"?"Urban %":"Rural %",v=>v.toFixed(1)+"%"]];
+ $("t-urban").innerHTML=table(sortBy(sub,"urban_pct").slice(0,10),cols("urban_pct"));
+ $("t-rural").innerHTML=table(sortBy(sub.map(r=>({...r,rural_pct:100-r.urban_pct})),"rural_pct").slice(0,10),cols("rural_pct"));
+ const ch=sortBy(sub,"urbanisation_change_pp").slice(0,15).reverse();
+ const lines=ch.map(r=>({type:"scatter",mode:"lines",x:[r.urban_pct_2017,r.urban_pct],y:[r.district,r.district],line:{color:"#e9d5ff",width:4},hoverinfo:"skip",showlegend:false}));
+ plot("c-dumbbell",[...lines,{type:"scatter",mode:"markers",name:"2017",x:ch.map(r=>r.urban_pct_2017),y:ch.map(r=>r.district),marker:{size:12,color:"#f9a8d4",line:{color:"#fff",width:2}},hovertemplate:"%{y}<br>2017: %{x:.1f}%<extra></extra>"},
+  {type:"scatter",mode:"markers",name:"2023",x:ch.map(r=>r.urban_pct),y:ch.map(r=>r.district),marker:{size:12,color:"#7c3aed",line:{color:"#fff",width:2}},hovertemplate:"%{y}<br>2023: %{x:.1f}%<extra></extra>"}],
+  {title:{text:"Urban share 2017 → 2023: the 15 biggest shifts"},xaxis:{ticksuffix:"%"}});
+}
+function densityGrowth(){const d=sortBy(D,"density"),provs=Object.keys(PC);
+ plot("c-density",provs.map(p=>{const s=d.filter(r=>r.province===p);return{type:"bar",name:SH[p],x:s.map(r=>r.district),y:s.map(r=>r.density),marker:{color:PC[p]},hovertemplate:"<b>%{x}</b><br>%{y:,.0f} people/km²<extra></extra>"};}),
+  {title:{text:"Population density of every district (log scale)"},yaxis:{type:"log"},xaxis:{categoryorder:"array",categoryarray:d.map(r=>r.district),tickangle:-60,tickfont:{size:9}},bargap:.15});
+ const c=[["#","#"],["district","District"],["province","Province"],["pop_2023","Population",fmtP],["density","Density /km²",v=>v.toFixed(1)]];
+ $("t-dense").innerHTML=table(d.slice(0,10),c);$("t-sparse").innerHTML=table(sortBy(D,"density",true).slice(0,10),c);
+ const hi=sortBy(D.filter(r=>r.growth_rate>3),"growth_rate"),lo=sortBy(D.filter(r=>r.growth_rate<1),"growth_rate",true);
+ const gc=[["district","District"],["province","Province"],["pop_2023","Pop 2023",fmtP],["growth_rate","Growth",v=>v.toFixed(2)+"%"]];
+ $("hg-title").textContent=`🔥 High Growth Zones (> 3% / yr): ${hi.length} districts`;$("lg-title").textContent=`🧊 Low Growth Zones (< 1% / yr): ${lo.length} districts`;
+ $("t-high").innerHTML=table(hi,gc);$("t-low").innerHTML=table(lo,gc);
+ const P=M.provinces;
+ plot("c-growthprov",[{type:"bar",x:P.map(p=>SH[p.province]),y:P.map(p=>p.growth_rate),marker:{color:P.map(p=>PC[p.province])},text:P.map(p=>p.growth_rate.toFixed(2)+"%"),textposition:"outside",hovertemplate:"%{x}: %{y:.2f}%/yr<extra></extra>"}],
+  {title:{text:"Annual growth by province"},yaxis:{ticksuffix:"%",range:[0,4]},showlegend:false,shapes:[{type:"line",xref:"paper",x0:0,x1:1,y0:M.national.growth_rate,y1:M.national.growth_rate,line:{dash:"dash",color:"#475569",width:1}}],
+   annotations:[{xref:"paper",x:0,y:M.national.growth_rate,text:"Pakistan "+M.national.growth_rate.toFixed(2)+"%",showarrow:false,yshift:10,xanchor:"left",font:{size:11,color:"#475569"}}]});
+ plot("c-hh",[{type:"bar",x:P.map(p=>SH[p.province]),y:P.map(p=>p.avg_hh_size),marker:{color:P.map(p=>PC[p.province])},text:P.map(p=>p.avg_hh_size.toFixed(2)),textposition:"outside",hovertemplate:"%{x}: %{y:.2f} persons<extra></extra>"}],{title:{text:"Average household size"},yaxis:{range:[0,8.2]},showlegend:false});
+}
+function gender(){const P=M.provinces,n=M.national;
+ const x=P.map(p=>SH[p.province]).concat(["Pakistan"]),y=P.map(p=>p.females_per_100_males).concat([n.females_per_100_males]);
+ plot("c-ratio",[{type:"bar",x,y,marker:{color:P.map(p=>PC[p.province]).concat(["#0f172a"])},text:y.map(v=>v.toFixed(1)),textposition:"outside",hovertemplate:"%{x}: %{y:.1f} females per 100 males<extra></extra>"}],
+  {title:{text:"Females per 100 males"},yaxis:{range:[80,104]},showlegend:false,shapes:[{type:"line",xref:"paper",x0:0,x1:1,y0:100,y1:100,line:{dash:"dot",color:"#94a3b8"}}]});
+ const vals=D.map(r=>r.females_per_100_males),mu=vals.reduce((a,b)=>a+b)/vals.length,sd=Math.sqrt(vals.reduce((a,b)=>a+(b-mu)**2,0)/(vals.length-1));
+ const out=sortBy(D.filter(r=>Math.abs(r.females_per_100_males-mu)/sd>1.5),"females_per_100_males",true);
+ $("t-gender").innerHTML=table(out,[["district","District"],["province","Province"],["females_per_100_males","F per 100 M",v=>v.toFixed(1)]]);
+ const groups=[["age_0_14_pct","Children 0-14","#f97316"],["age_15_64_pct","Working age 15-64","#7c3aed"],["age_65_plus_pct","Elderly 65+","#14b8a6"]];
+ plot("c-age",groups.map(g=>({type:"bar",name:g[1],x:P.map(p=>SH[p.province]),y:P.map(p=>p[g[0]]),marker:{color:g[2]},hovertemplate:"%{x}<br>%{y:.1f}%<extra></extra>"})),{title:{text:"Age structure (% of province)"},barmode:"group",yaxis:{ticksuffix:"%"}});
+ plot("c-lit",[{type:"bar",name:"Male",x:P.map(p=>SH[p.province]),y:P.map(p=>p.literacy_male),marker:{color:"#2563eb"},hovertemplate:"%{x}<br>Male %{y:.1f}%<extra></extra>"},{type:"bar",name:"Female",x:P.map(p=>SH[p.province]),y:P.map(p=>p.literacy_female),marker:{color:"#ec4899"},hovertemplate:"%{x}<br>Female %{y:.1f}%<extra></extra>"}],{title:{text:"Literacy rate (10+) by sex"},barmode:"group",yaxis:{ticksuffix:"%",range:[0,100]}});
+}
+function quint(vals){const s=[...vals].sort((a,b)=>a-b);return [0,.2,.4,.6,.8,1].map(q=>s[Math.min(s.length-1,Math.floor(q*(s.length-1)))]);}
+function mapView(){const sel=$("map-sel");const keys=["pop_2023","density","growth_rate","urban_pct","females_per_100_males","avg_hh_size","literacy_rate"];
+ sel.innerHTML=keys.map(k=>`<option value="${k}">${IND[k][0]}</option>`).join("");sel.onchange=()=>drawMap(sel.value);
+ map=L.map("map",{zoomSnap:.25,attributionControl:false}).fitBounds([[23.6,60.9],[37.1,77.8]]);drawMap("pop_2023");}
+let legendCtl=null,markers=null;
+function drawMap(k){const idx={};D.forEach(r=>idx[r.district]=r);const vals=D.map(r=>r[k]).filter(v=>v!=null);let breaks,colour;
+ if(k==="females_per_100_males"){const dv=["#c026d3","#f0abfc","#f1f5f9","#93c5fd","#1d4ed8"];breaks=[80,88,92,96,100,110];colour=v=>{for(let i=0;i<5;i++)if(v<breaks[i+1])return dv[i];return dv[4];};breaks._c=dv;}
+ else{breaks=quint(vals);colour=v=>{for(let i=0;i<5;i++)if(v<=breaks[i+1])return PLASMA[i];return PLASMA[4];};breaks._c=PLASMA;}
+ if(layer)map.removeLayer(layer);if(markers)map.removeLayer(markers);
+ layer=L.geoJSON(GEO,{style:f=>{const r=idx[f.properties.district];return{fillColor:r?colour(r[k]):"#e2e8f0",color:"#fff",weight:.7,fillOpacity:.9};},
+  onEachFeature:(f,l)=>{const r=idx[f.properties.district];l.bindTooltip(r?`<b>${r.district}</b><br>${r.province}<br>Population: ${fmtN(r.pop_2023)}<br>${IND[k][0]}: <b>${IND[k][1](r[k])}</b>`:(f.properties.note||f.properties.boundary_name),{sticky:true});
+   l.on({mouseover:e=>e.target.setStyle({weight:2.5,color:"#0f172a"}),mouseout:e=>layer.resetStyle(e.target)});}}).addTo(map);
+ markers=L.layerGroup(Object.entries(GEO.markers||{}).filter(([d])=>idx[d]).map(([d,[x,y]])=>{const r=idx[d];return L.circleMarker([y,x],{radius:6,color:"#0f172a",weight:1.5,fillColor:colour(r[k]),fillOpacity:1})
+  .bindTooltip(`<b>${d}</b> (new district)<br>${r.province}<br>Population: ${fmtN(r.pop_2023)}<br>${IND[k][0]}: <b>${IND[k][1](r[k])}</b>`);})).addTo(map);
+ if(legendCtl)map.removeControl(legendCtl);legendCtl=L.control({position:"bottomright"});
+ legendCtl.onAdd=()=>{const div=L.DomUtil.create("div","legend");div.innerHTML=`<b>${IND[k][0]}</b><br>`+breaks._c.map((c,i)=>`<i style="background:${c}"></i>${IND[k][1](breaks[i])} – ${IND[k][1](breaks[i+1])}`).join("<br>")+`<br><i style="background:#e2e8f0"></i>No match`;return div;};legendCtl.addTo(map);
+ const c=[["#","#"],["district","District"],[k,"Value",IND[k][1]]];
+ $("map-top").innerHTML=table(sortBy(D,k).slice(0,10),c);$("map-bot").innerHTML=table(sortBy(D,k,true).slice(0,10),c);
+}
+/* =====================================================  ML / PROJECTOR  */
+function ml(){const b=M.leaderboard[0];
+ $("ml-kpis").innerHTML=kpi("🏆","Best model",M.best,"lowest cross-validated MAE","#7c3aed")+kpi("🎯","MAE - growth rate",b["Test MAE (rate, pp)"].toFixed(2)+" pp","naive baseline "+M.baseline.toFixed(2)+" pp","#ec4899")
+  +kpi("📈","R² - population",b["Test R² (population)"].toFixed(4),"MAE "+fmtN(b["Test MAE (population)"])+" people","#14b8a6")+kpi("📏","MAPE - population",b["Test MAPE (population %)"].toFixed(2)+"%","average error, test districts","#f97316");
+ const f=v=>v.toFixed(3);
+ $("t-lb").innerHTML=table(M.leaderboard,[["Model","Model"],["CV MAE (rate, pp)","CV MAE (pp)",f],["Test MAE (rate, pp)","Test MAE (pp)",f],["Test R² (rate)","R² rate",f],["Test MAE (population)","MAE population",fmtN],["Test R² (population)","R² population",v=>v.toFixed(4)],["Test MAPE (population %)","MAPE",v=>v.toFixed(2)+"%"]]);
+ const t=M.test,mx=Math.max(...t.map(r=>Math.max(r.pop_2023,r.pred_pop_2023)))*1.05;
+ plot("c-pva",[{type:"scatter",mode:"lines",x:[0,mx],y:[0,mx],line:{dash:"dash",color:"#94a3b8"},name:"Perfect prediction",hoverinfo:"skip"},
+  {type:"scatter",mode:"markers",x:t.map(r=>r.pop_2023),y:t.map(r=>r.pred_pop_2023),text:t.map(r=>r.district),marker:{size:12,color:t.map(r=>r.growth_rate),colorscale:"Plasma",line:{color:"#fff",width:1.5},colorbar:{title:{text:"Growth %"},thickness:12}},name:"Test district",hovertemplate:"<b>%{text}</b><br>Actual %{x:,.0f}<br>Predicted %{y:,.0f}<extra></extra>"}],
+  {title:{text:"Predicted vs actual 2023 population (test set)"},xaxis:{tickformat:"~s",title:{text:"Actual"}},yaxis:{tickformat:"~s",title:{text:"Predicted"}},showlegend:false});
+ const im=M.importance;plot("c-imp",[{type:"bar",orientation:"h",y:im.map(r=>r.feature),x:im.map(r=>r.importance),marker:{color:im.map((r,i)=>VIBE[i%VIBE.length])},hovertemplate:"%{y}: %{x:.4f}<extra></extra>"}],{title:{text:"Permutation importance ("+M.best+")"},showlegend:false});
+}
+function projector(){const sel=$("pj-sel");sel.innerHTML=[...D].sort((a,b)=>a.district.localeCompare(b.district)).map(r=>`<option>${r.district}</option>`).join("");sel.value="Sheikhupura";
+ const setDefault=()=>{const r=cur(),m=document.querySelector("input[name=pjm]:checked").value;const v=m==="model"?r.model_rate:m==="trend"?r.growth_rate:(r.model_rate+r.growth_rate)/2;$("pj-rate").value=v.toFixed(2);proj();};
+ sel.onchange=setDefault;document.querySelectorAll("input[name=pjm]").forEach(e=>e.onchange=setDefault);$("pj-rate").oninput=proj;setDefault();}
+const cur=()=>D.find(r=>r.district===$("pj-sel").value);
+function proj(){const r=cur(),g=+$("pj-rate").value;$("pj-rate-l").textContent=g.toFixed(2);
+ $("pj-note").innerHTML=`Observed trend <b>${r.growth_rate.toFixed(2)}%</b> · ML model expects <b>${r.model_rate.toFixed(2)}%</b>`;
+ $("pj-facts").innerHTML=table([["Province",r.province],["Population 2023",fmtN(r.pop_2023)],["Population 2017",fmtN(r.pop_2017)],["Observed growth",r.growth_rate.toFixed(2)+"%"],["Urban",r.urban_pct.toFixed(1)+"%"],["Household size",r.avg_hh_size.toFixed(2)],["Literacy",r.literacy_rate.toFixed(1)+"%"]].map(x=>({a:x[0],b:x[1]})),[["a","2023 census values"],["b","",v=>v]]);
+ const p30=r.pop_2023*Math.pow(1+g/100,7),p35=r.pop_2023*Math.pow(1+g/100,12),add=p35-r.pop_2023;
+ $("pj-kpis").innerHTML=kpi("📍","2023 census",fmtP(r.pop_2023),"baseline","#94a3b8")+kpi("🔮","2030",fmtP(p30),"+"+fmtP(p30-r.pop_2023),"#ec4899")+kpi("🚀","2035",fmtP(p35),"+"+fmtP(add),"#7c3aed")+kpi("🏠","New households",fmtP(Math.max(add,0)/r.avg_hh_size),"by 2035","#14b8a6");
+ const ys=["2017 (census)","2023 (census)","2030 (projected)","2035 (projected)"],vs=[r.pop_2017,r.pop_2023,p30,p35];
+ plot("c-pj",[{type:"bar",x:ys,y:vs,marker:{color:["#f9a8d4","#ec4899","#a855f7","#6d28d9"]},text:vs.map(fmtP),textposition:"inside",insidetextanchor:"start",textfont:{color:"#fff"},hovertemplate:"%{x}<br>%{y:,.0f}<extra></extra>"}],
+  {title:{text:`${r.district}: census vs projection at ${g.toFixed(2)}%/yr`},yaxis:{tickformat:"~s"},showlegend:false});
+ const lvl=g>=2.5?"significant":g>=1.5?"steady":"modest";
+ $("pj-insight").innerHTML=`<div class="insight ai">🤖 At a growth rate of ${g.toFixed(2)}% per year, District ${r.district} is projected to reach ${(p35/1e6).toFixed(2)} million people by 2035 (${add>=0?"+":""}${(add/1e6).toFixed(2)} M from 2023). That implies roughly ${fmtN(Math.max(add,0)/r.avg_hh_size)} additional households, which will require ${lvl} expansion of housing, schools, health facilities and water-supply infrastructure.</div>`;
+}
+// ---------- agent (offline planner, same logic as the full app)
+const ALIAS={pop_2023:["population","populous","people","biggest","largest","smallest"],density:["density","dense","crowded"],growth_rate:["growth","growing","grew","fastest","slowest"],
+ urban_pct:["urban","urbanised","urbanized","rural"],urbanisation_change_pp:["urbanised the most","urbanized the most"],females_per_100_males:["gender","sex ratio","women","female"],
+ avg_hh_size:["household size","household"],literacy_rate:["literacy","literate"],literacy_female:["female literacy","women literacy"],age_0_14_pct:["children","youth","young"]};
+function findInd(q){let best="pop_2023",n=0;for(const[k,ws]of Object.entries(ALIAS))for(const w of ws)if(q.includes(w)&&w.length>n){best=k;n=w.length;}return best;}
+function findProv(q){const m=[["punjab","Punjab"],["sindh","Sindh"],["khyber","Khyber Pakhtunkhwa"],["kpk","Khyber Pakhtunkhwa"],["kp","Khyber Pakhtunkhwa"],["balochistan","Balochistan"],["islamabad","Islamabad (ICT)"],["ict","Islamabad (ICT)"]];
+ for(const[k,p]of m)if(new RegExp("(^|\\W)"+k+"(\\W|$)").test(q))return p;return null;}
+function lev(a,b){const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length];}
+function findDists(q){let out=[];const names=[...D.map(r=>r.district)].sort((a,b)=>b.length-a.length);
+ for(const n of names){const re=new RegExp("\\b"+n.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b");if(re.test(q)&&!out.some(o=>o.toLowerCase().includes(n.toLowerCase())))out.push(n);}
+ if(!out.length){const w=q.match(/[a-z]+/g)||[];for(const g of w){if(g.length<5||findProv(g))continue;let b=null,bd=9;for(const n of names){const dd=lev(g,n.toLowerCase());if(dd<bd){bd=dd;b=n;}}if(b&&bd<=Math.max(1,Math.floor(g.length*.25))&&!out.includes(b))out.push(b);}}
+ if(q.includes("pakhtunkhwa"))out=out.filter(d=>d!=="Khyber");return out.sort((a,b)=>q.indexOf(a.toLowerCase())-q.indexOf(b.toLowerCase()));}
+function ask(raw){const q=raw.toLowerCase(),ds=findDists(q),pv=findProv(q),ind=findInd(q),steps=[];
+ const nums=(q.match(/\d+(\.\d+)?/g)||[]).map(Number),yrs=nums.filter(x=>x>=2024&&x<=2100),rm=q.match(/(\d+(\.\d+)?)\s*%/),rate=rm?+rm[1]:null;
+ const nn=nums.find(x=>x>=1&&x<=50&&x!==rate)||10;const P=x=>D.find(r=>r.district===x);
+ if(ds.length&&(yrs.length||/project|predict|forecast|future|by 20/.test(q))){const r=P(ds[0]),g=rate??(r.model_rate+r.growth_rate)/2,y=yrs[0]||2035;
+  steps.push(`project_population(district="${r.district}", year=${y}${rate!=null?", growth_rate="+rate:""})`);
+  const pj=r.pop_2023*Math.pow(1+g/100,y-2023);return{steps,html:`<b>${r.district} (${r.province})</b>: 2017 ${fmtP(r.pop_2017)} → 2023 ${fmtP(r.pop_2023)}.<br>At <b>${g.toFixed(2)}%/yr</b> (${rate!=null?"your scenario":"blend of trend "+r.growth_rate.toFixed(2)+"% and ML "+r.model_rate.toFixed(2)+"%"}), it reaches <b>${fmtP(pj)}</b> by ${y}.`};}
+ if(ds.length>=2){steps.push(`compare_districts(${JSON.stringify(ds.slice(0,5))})`);const rs=ds.slice(0,5).map(P);
+  return{steps,html:"Comparison (PBS Census 2023):"+table(rs,[["district","District"],["pop_2023","Population",fmtP],["growth_rate","Growth %",v=>v.toFixed(2)],["urban_pct","Urban %",v=>v.toFixed(1)],["density","Density",v=>fmtN(v)],["literacy_rate","Literacy %",v=>v.toFixed(1)]])};}
+ if(ds.length===1){const r=P(ds[0]);steps.push(`district_profile("${r.district}")`);const rank=D.filter(x=>x.pop_2023>r.pop_2023).length+1;
+  return{steps,html:`<b>${r.district}</b> (${r.province}, ${r.division} division)<br>Population 2023: <b>${fmtP(r.pop_2023)}</b> (rank #${rank} of 136) · growth <b>${r.growth_rate.toFixed(2)}%/yr</b><br>Urban ${r.urban_pct.toFixed(1)}% (${r.urbanisation_change_pp>=0?"+":""}${r.urbanisation_change_pp.toFixed(1)} pp since 2017) · density ${fmtN(r.density)}/km² · household size ${r.avg_hh_size.toFixed(2)}<br>${r.females_per_100_males.toFixed(1)} females per 100 males · literacy ${r.literacy_rate.toFixed(1)}% (M ${r.literacy_male.toFixed(1)}%, F ${r.literacy_female.toFixed(1)}%)`};}
+ if(/anomal|unusual|outlier|suspicious|undercount/.test(q)){steps.push("find_anomalies()");return{steps,html:"Isolation Forest flags:"+table(D.filter(r=>r.anomaly),[["district","District"],["province","Province"],["anomaly_why","Why"]])};}
+ const th=q.match(/(above|over|more than|greater than|>|below|under|less than|<)\s*(\d+(\.\d+)?)/);
+ if(th){const gt=/above|over|more|greater|>/.test(th[1]),v=+th[2];steps.push(`filter_districts(${ind} ${gt?">":"<"} ${v}${pv?", province="+pv:""})`);
+  const rs=sortBy(D.filter(r=>(!pv||r.province===pv)&&(gt?r[ind]>v:r[ind]<v)),ind);return{steps,html:`<b>${rs.length} districts</b> ${pv?"in "+pv+" ":""}with ${IND[ind]?IND[ind][0]:ind} ${gt?">":"<"} ${v}:`+table(rs,[["district","District"],["province","Province"],[ind,"Value",v=>(+v).toFixed(2)]])};}
+ if(/top|highest|most|largest|biggest|fastest|lowest|least|smallest|slowest|rank|which/.test(q)){let asc=/lowest|least|smallest|slowest|bottom|fewest/.test(q);if(q.includes("rural")&&ind==="urban_pct")asc=!asc;
+  steps.push(`rank_districts(indicator="${ind}", n=${nn}, order="${asc?"asc":"desc"}"${pv?', province="'+pv+'"':""})`);const rs=sortBy(D.filter(r=>!pv||r.province===pv),ind,asc).slice(0,nn);
+  return{steps,html:`<b>${asc?"Lowest":"Top"} ${rs.length} districts${pv?" in "+pv:""} by ${IND[ind]?IND[ind][0]:ind}</b>`+table(rs,[["#","#"],["district","District"],["province","Province"],[ind,"Value",v=>(+v).toFixed(2)]])};}
+ if(pv){const p=M.provinces.find(x=>x.province===pv);steps.push(`province_profile("${pv}")`);return{steps,html:`<b>${pv}</b>: ${fmtP(p.pop_2023)} people (${p.share_pct.toFixed(1)}% of Pakistan) in ${p.districts} districts. Growth ${p.growth_rate.toFixed(2)}%/yr, ${p.urban_pct.toFixed(1)}% urban, household size ${p.avg_hh_size.toFixed(2)}, literacy ${p.literacy_rate.toFixed(1)}% (M ${p.literacy_male.toFixed(1)}% / F ${p.literacy_female.toFixed(1)}%).`};}
+ const n=M.national;steps.push("national_overview()");return{steps,html:`<b>Pakistan (Census 2023)</b>: ${fmtP(n.population)} people in ${n.districts} districts, ${fmtN(n.households)} households. Growth ${n.growth_rate.toFixed(2)}%/yr · urban ${n.urban_pct.toFixed(1)}% · literacy ${n.literacy_rate.toFixed(1)}%.`};}
+function agent(){const ex=["Give me a national overview","Top 10 most densely populated districts","Which districts in Sindh are most urbanized?","Compare Lahore, Faisalabad and Rawalpindi","Project Peshawar to 2035 at 3%","Districts in Balochistan with growth above 4","Lowest female literacy districts in KP","Are there any anomalies?","Tell me about Lahor"];
+ $("examples").innerHTML=ex.map(e=>`<button class="ghost">${e}</button>`).join("");$("examples").querySelectorAll("button").forEach(b=>b.onclick=()=>send(b.textContent));
+ $("ask").onsubmit=e=>{e.preventDefault();const v=$("q").value.trim();if(v){send(v);$("q").value="";}};
+ $("chat").innerHTML=`<div class="msg a">Assalam-o-Alaikum! Ask me about any district, province or trend: rankings, comparisons, projections or anomalies.</div>`;}
+function send(q){const c=$("chat"),r=ask(q);const esc=s=>s.replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+ c.innerHTML+=`<div class="msg u">${esc(q)}</div><div class="msg a">${r.html}<details style="margin-top:8px;color:var(--ink3);font-size:.82rem"><summary>Agent reasoning: ${r.steps.length} tool call</summary><code>${r.steps.join("<br>")}</code></details></div>`;c.scrollTop=c.scrollHeight;}
+
+function aiInsights(){const a=D.filter(r=>r.anomaly),nm=D.filter(r=>!r.anomaly);
+ plot("c-anom",[{type:"scatter",mode:"markers",name:"Normal",x:nm.map(r=>r.growth_rate),y:nm.map(r=>r.females_per_100_males),text:nm.map(r=>r.district),marker:{size:9,color:"#c4b5fd",line:{color:"#fff",width:1}},hovertemplate:"<b>%{text}</b><br>Growth %{x:.2f}%<br>F/100M %{y:.1f}<extra></extra>"},
+  {type:"scatter",mode:"markers",name:"Anomaly",x:a.map(r=>r.growth_rate),y:a.map(r=>r.females_per_100_males),text:a.map(r=>r.district+"<br>"+r.anomaly_why),marker:{size:14,color:"#f43f5e",symbol:"diamond",line:{color:"#fff",width:1.5}},hovertemplate:"<b>%{text}</b><extra></extra>"}],
+  {title:{text:"Districts in indicator space (red = flagged)"},xaxis:{title:{text:"Growth %/yr"}},yaxis:{title:{text:"Females per 100 males"}}});
+ $("t-anom").innerHTML=table(a,[["district","District"],["province","Province"],["anomaly_why","Why flagged"]]);
+ const cols=["#7c3aed","#f97316","#14b8a6","#ec4899"],ts=M.clusters.map(c=>c.typology);
+ plot("c-clu",ts.map((t,i)=>{const s=D.filter(r=>r.typology===t);return{type:"scatter",mode:"markers",name:t,x:s.map(r=>r.urban_pct),y:s.map(r=>r.literacy_rate),text:s.map(r=>r.district),marker:{size:s.map(r=>6+Math.sqrt(r.pop_2023)/180),color:cols[i],opacity:.85,line:{color:"#fff",width:1}},hovertemplate:"<b>%{text}</b><br>Urban %{x:.1f}%<br>Literacy %{y:.1f}%<extra></extra>"};}),
+  {title:{text:"District typologies (bubble = population)"},xaxis:{title:{text:"Urban %"}},yaxis:{title:{text:"Literacy %"}},legend:{y:-0.2,yanchor:"top",x:0,xanchor:"left"}});
+ $("t-clu").innerHTML=table(M.clusters,[["typology","Typology"],["districts","Districts",v=>v],["urban_pct","Urban %",v=>v.toFixed(1)],["growth_rate","Growth %",v=>v.toFixed(2)],["literacy_rate","Literacy %",v=>v.toFixed(1)]]);
+}
+init().catch(e=>{$("app").innerHTML='<div class="loading">Could not load data: '+e+'</div>';console.error(e);});
+</script>
+</body>
+</html>
