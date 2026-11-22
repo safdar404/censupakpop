@@ -25,10 +25,17 @@ jobs:
       - name: Verify Streamlit starts inside the container
         run: |
           docker run -d --name census-smoke -p 127.0.0.1:8501:8501 "$IMAGE:$GITHUB_SHA"
-          if ! curl --fail --silent --show-error --retry 20 --retry-delay 2 --retry-connrefused http://127.0.0.1:8501/_stcore/health; then
-            docker logs census-smoke
-            exit 1
-          fi
+          for attempt in {1..30}; do
+            if curl --fail --silent --max-time 3 http://127.0.0.1:8501/_stcore/health; then
+              exit 0
+            fi
+            if [ "$(docker inspect --format '{{.State.Running}}' census-smoke)" != true ]; then
+              break
+            fi
+            sleep 2
+          done
+          docker logs census-smoke
+          exit 1
       - name: Publish versioned and latest tags
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
