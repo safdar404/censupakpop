@@ -1,0 +1,200 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>
+:root{
+ --ink:#0f172a;--ink2:#475569;--ink3:#64748b;--line:#e8eaf2;--bg:#f6f7fb;--card:#fff;
+ --punjab:#2563eb;--sindh:#f43f5e;--kp:#10b981;--balochistan:#f59e0b;--ict:#8b5cf6;
+ --violet:#7c3aed;--fuchsia:#d946ef;--pink:#ec4899;--orange:#f97316;--teal:#14b8a6;--green:#00a86b;
+ --grad:linear-gradient(120deg,#7c3aed 0%,#d946ef 45%,#f97316 100%);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Plus Jakarta Sans",Inter,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 22px 60px}
+/* ---------- hero */
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:28px 32px;color:#fff;
+ background:radial-gradient(600px 300px at 10% 0%,rgba(217,70,239,.55),transparent 60%),radial-gradient(700px 360px at 95% 10%,rgba(249,115,22,.45),transparent 60%),
+ radial-gradient(800px 400px at 60% 120%,rgba(20,184,166,.45),transparent 60%),linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%)}
+.hero:after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.18) 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(90deg,transparent,#000 70%);pointer-events:none}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;font-weight:700;color:#f5d0fe}
+.hero h1{margin:6px 0 6px;font-size:2.3rem;font-weight:800;letter-spacing:-.02em}
+.hero h1 span{background:linear-gradient(90deg,#fde68a,#f9a8d4,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;color:#e0e7ff;max-width:800px;line-height:1.55}
+.chip{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 13px;font-size:.78rem;margin:14px 6px 0 0;backdrop-filter:blur(4px)}
+/* ---------- nav */
+nav{position:sticky;top:0;z-index:1000;background:rgba(246,247,251,.9);backdrop-filter:blur(10px);margin:14px -22px 18px;padding:10px 22px;display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line)}
+nav a{white-space:nowrap;text-decoration:none;color:var(--ink2);font-weight:700;font-size:.84rem;padding:8px 14px;border-radius:999px;transition:.15s}
+nav a:hover{background:#eef0f8;color:var(--ink)}
+nav a.on{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+nav a.new:after{content:"NEW";font-size:.58rem;margin-left:6px;padding:1px 5px;border-radius:4px;background:#fde68a;color:#92400e;vertical-align:2px}
+nav a.on.new:after{background:rgba(255,255,255,.3);color:#fff}
+.view{display:none;animation:fade .35s ease}.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:1.7rem;font-weight:800;margin:2px 0 4px;letter-spacing:-.01em}
+.mod{display:inline-block;font-weight:800;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--ink2);margin:0 0 16px;line-height:1.5}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}.g32{grid-template-columns:3fr 2fr}.g23{grid-template-columns:2fr 3fr}
+@media(max-width:640px){.g5{grid-template-columns:repeat(2,1fr)}.g4,.g3{grid-template-columns:1fr 1fr}.g2,.g32,.g23{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px -12px rgba(76,29,149,.12)}
+.card h3{margin:0 0 10px;font-size:1rem;font-weight:800}
+.kpi{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;overflow:hidden;box-shadow:0 8px 24px -14px rgba(76,29,149,.25)}
+.kpi:before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--c,var(--violet))}
+.kpi .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:18px;margin-bottom:10px;background:color-mix(in srgb,var(--c) 14%,#fff)}
+.kpi .l{color:var(--ink2);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kpi .v{font-size:clamp(1.3rem,2.3vw,1.95rem);font-weight:800;margin-top:2px;letter-spacing:-.02em}
+.kpi .s{color:var(--ink3);font-size:.8rem}
+.chart{width:100%;height:390px}
+.insight{border-left:4px solid var(--violet);background:linear-gradient(90deg,#f5f3ff,#fff);padding:10px 14px;border-radius:0 12px 12px 0;margin:7px 0;line-height:1.5}
+.insight.ai{border-left-color:var(--fuchsia);background:linear-gradient(90deg,#fdf4ff,#fff)}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th{text-align:left;color:var(--ink2);font-weight:700;border-bottom:1px solid var(--line);padding:7px 8px;position:sticky;top:0;background:#fff;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+td{padding:7px 8px;border-bottom:1px solid #f1f2f7}
+tr:hover td{background:#faf8ff}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{max-height:360px;overflow:auto}
+select,input[type=text]{font:inherit;padding:9px 12px;border:1px solid #d9dcea;border-radius:12px;background:#fff;min-width:200px}
+input[type=range]{width:100%;accent-color:var(--violet)}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;background:var(--grad);color:#fff;cursor:pointer;box-shadow:0 6px 16px -6px rgba(217,70,239,.6)}
+button.ghost{background:#fff;color:var(--ink);border:1px solid #d9dcea;font-weight:600;font-size:.84rem;padding:8px 10px;text-align:left;box-shadow:none}
+button.ghost:hover{border-color:var(--violet);color:var(--violet)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+/* ---------- globe */
+.globe-card{position:relative;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 50% 45%,#1e1b4b 0%,#0b1026 55%,#050816 100%);min-height:600px;color:#e2e8f0}
+.globe-card .stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#c4b5fd,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#fff,transparent),radial-gradient(1px 1px at 85% 65%,#f9a8d4,transparent),radial-gradient(1px 1px at 10% 70%,#a5f3fc,transparent),radial-gradient(1px 1px at 55% 50%,#fff,transparent),radial-gradient(1px 1px at 92% 90%,#fff,transparent),radial-gradient(1px 1px at 30% 10%,#fde68a,transparent);background-size:300px 300px;opacity:.7;animation:twinkle 6s ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.35}}
+#globe{display:block;margin:0 auto;cursor:grab;position:relative}
+#globe:active{cursor:grabbing}
+.globe-ui{position:absolute;left:22px;top:20px;z-index:2;max-width:330px}
+.globe-ui h3{margin:0;font-size:1.35rem;font-weight:800;color:#fff}
+.globe-ui p{margin:6px 0 12px;color:#c7d2fe;font-size:.9rem;line-height:1.5}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:6px 12px;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:none}
+.pchip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pchip.on{background:rgba(255,255,255,.2);border-color:#fff}
+.gbtns{position:absolute;left:22px;bottom:20px;z-index:2;display:flex;gap:8px}
+.gbtns button{padding:8px 14px;font-size:.84rem}
+.gbtns button.dim{background:rgba(255,255,255,.12);box-shadow:none;border:1px solid rgba(255,255,255,.25)}
+.pcard{position:absolute;right:22px;top:20px;z-index:2;width:290px;background:rgba(15,23,42,.72);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px);border-radius:18px;padding:16px;transition:.25s}
+.pcard .t{font-size:1.15rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.pcard .t i{width:12px;height:12px;border-radius:50%}
+.pcard .big{font-size:2rem;font-weight:800;margin:6px 0 2px;color:#fff}
+.pcard .mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pcard .mini div{background:rgba(255,255,255,.07);border-radius:10px;padding:8px}
+.pcard .mini b{display:block;font-size:1.05rem;color:#fff}
+.pcard .mini span{font-size:.72rem;color:#c7d2fe;text-transform:uppercase;letter-spacing:.05em}
+.bar{height:8px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:4px}
+.bar > i{display:block;height:100%;border-radius:6px}
+.gtip{position:absolute;pointer-events:none;background:#0f172a;color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 10px;border-radius:8px;font-size:.8rem;display:none;z-index:3}
+/* ---------- infographics */
+.bignum{font-size:2.2rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.ig{border-radius:20px;padding:18px;color:#fff;position:relative;overflow:hidden;min-height:150px}
+.ig .lab{font-size:.78rem;opacity:.9;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.ig .desc{font-size:.85rem;opacity:.92;margin-top:6px;line-height:1.4}
+.ig svg.ico{position:absolute;right:-8px;bottom:-8px;width:96px;height:96px;opacity:.22}
+.pcards .card{position:relative;overflow:hidden}
+.pcards .card .stripe{position:absolute;inset:0 0 auto 0;height:6px}
+.pc-head{display:flex;gap:12px;align-items:center}
+.pc-head svg{flex:0 0 96px}
+.pc-name{font-weight:800;font-size:1.1rem}
+.pc-pop{font-size:1.32rem;white-space:nowrap;font-weight:800;letter-spacing:-.02em}
+.stat{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ink2);margin-top:8px}
+.stat b{color:var(--ink)}
+.lbar{height:8px;border-radius:6px;background:#eef0f8;overflow:hidden;margin-top:3px}
+.lbar i{display:block;height:100%;border-radius:6px}
+.people{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px}
+.people span{width:14px;height:14px;border-radius:50%;display:inline-block}
+#bubblemap{width:100%;height:560px}
+#map{height:600px;border-radius:18px;border:1px solid var(--line);background:#eef1f8}
+.legend{background:rgba(255,255,255,.96);border:1px solid #d9dcea;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.6;box-shadow:0 6px 16px -8px rgba(0,0,0,.2)}
+.legend i{display:inline-block;width:22px;height:12px;border-radius:3px;margin-right:8px;vertical-align:middle}
+.chat{height:440px;overflow:auto;padding:4px}
+.msg{padding:10px 14px;border-radius:14px;margin:8px 0;line-height:1.5}
+.msg.u{background:var(--grad);color:#fff;margin-left:20%}
+.msg.a{background:#fff;border:1px solid var(--line);margin-right:5%}
+.badge{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 9px;border-radius:999px;background:#fef3c7;color:#92400e;vertical-align:middle}
+.foot{margin-top:30px;color:var(--ink3);font-size:.82rem;border-top:1px solid var(--line);padding-top:14px;line-height:1.6}
+.loading{padding:60px;text-align:center;color:var(--ink2)}
+.legend-dots{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--ink2);margin-top:6px}
+.legend-dots i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+</style><style>body{background:transparent;margin:0}.wrap{padding:0}.pcards{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))!important}.pc-head svg{flex:0 0 96px}</style></head><body><div class="wrap"><div class="grid g5" id="ig-strip"></div>
+    <h2 style="margin-top:26px;font-size:1.3rem">Province profiles</h2>
+    <div class="grid g5 pcards" id="pcards" style="margin-top:8px"></div>
+    <div class="grid g32" style="margin-top:16px">
+      <div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">District bubble map: bubble size = population</h3>
+        <select id="bub-sel"><option value="growth_rate">Colour: growth rate</option><option value="urban_pct">Colour: urban %</option><option value="literacy_rate">Colour: literacy</option><option value="province">Colour: province</option></select></div>
+        <svg id="bubblemap"></svg><div class="legend-dots" id="bub-legend"></div></div>
+      <div class="card"><h3>If Pakistan were 100 people…</h3><div id="people"></div>
+        <h3 style="margin-top:18px">Every day Pakistan adds</h3><div id="clock"></div><h3 style="margin-top:18px">🔥 Fastest-growing districts</h3><div id="fastest"></div></div>
+    </div>
+  </div><script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script><script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script><script>
+const __D=__DATA__;let D=__D.districts,M=__D.meta,PROV=__D.provinces,WORLD=__D.world;
+const PC={"Punjab":"#2563eb","Sindh":"#f43f5e","Khyber Pakhtunkhwa":"#10b981","Balochistan":"#f59e0b","Islamabad (ICT)":"#8b5cf6"};
+const SH={"Punjab":"Punjab","Sindh":"Sindh","Khyber Pakhtunkhwa":"KP","Balochistan":"Balochistan","Islamabad (ICT)":"ICT"};
+const EMO={"Punjab":"🌾","Sindh":"🌊","Khyber Pakhtunkhwa":"⛰️","Balochistan":"🏜️","Islamabad (ICT)":"🏛️"};
+const VIBE=["#7c3aed","#ec4899","#f97316","#14b8a6","#2563eb","#f59e0b","#10b981","#f43f5e"];
+const PLASMA=["#fde047","#fb923c","#f43f5e","#c026d3","#5b21b6"];
+const IND={pop_2023:["Total population (2023)",v=>fmtN(v)],density:["Density (people / km²)",v=>fmtN(v)],growth_rate:["Annual growth 2017-23 (%)",v=>v.toFixed(2)+"%"],
+ urban_pct:["Urban population (%)",v=>v.toFixed(1)+"%"],females_per_100_males:["Females per 100 males",v=>v.toFixed(1)],avg_hh_size:["Average household size",v=>v.toFixed(2)],
+ literacy_rate:["Literacy rate 10+ (%)",v=>v.toFixed(1)+"%"],literacy_female:["Female literacy (%)",v=>v.toFixed(1)+"%"],age_0_14_pct:["Children 0-14 (%)",v=>v.toFixed(1)+"%"],
+ urbanisation_change_pp:["Urbanisation change 2017-23 (pp)",v=>v.toFixed(1)]};
+let G={};
+const fmtN=v=>Math.round(v).toLocaleString("en-US");
+const fmtP=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+" M":Math.abs(v)>=1e3?(v/1e3).toFixed(1)+" K":Math.round(v)+"";
+const $=id=>document.getElementById(id);
+const L0={font:{family:"Plus Jakarta Sans, Inter, Segoe UI, sans-serif",size:13,color:"#0f172a"},paper_bgcolor:"rgba(0,0,0,0)",plot_bgcolor:"rgba(0,0,0,0)",margin:{l:10,r:10,t:62,b:10},
+ xaxis:{gridcolor:"#eef0f6",zerolinecolor:"#e2e5ef",automargin:true},yaxis:{gridcolor:"#eef0f6",zerolinecolor:"#e2e5ef",automargin:true},legend:{orientation:"h",x:1,xanchor:"right",y:1.0,yanchor:"bottom"},
+ hoverlabel:{bgcolor:"#0f172a",bordercolor:"#0f172a",font:{color:"#fff"}},title:{x:0,xanchor:"left",y:0.97,font:{size:15,color:"#0f172a"}},colorway:VIBE};
+function plot(id,data,layout={}){const l=JSON.parse(JSON.stringify(L0));for(const k in layout){if(typeof layout[k]==="object"&&!Array.isArray(layout[k])&&l[k])Object.assign(l[k],layout[k]);else l[k]=layout[k];}
+ Plotly.react(id,data,l,{displaylogo:false,responsive:true,modeBarButtonsToRemove:["lasso2d","select2d"]});}
+function table(rows,cols){return "<table><tr>"+cols.map(c=>`<th class="${c[2]?'n':''}">${c[1]}</th>`).join("")+"</tr>"+rows.map((r,i)=>"<tr>"+cols.map(c=>`<td class="${c[2]?'n':''}">${c[0]==='#'?i+1:(c[2]?c[2](r[c[0]]):r[c[0]])}</td>`).join("")+"</tr>").join("")+"</table>";}
+const sortBy=(arr,k,asc)=>[...arr].filter(r=>r[k]!=null).sort((a,b)=>asc?a[k]-b[k]:b[k]-a[k]);
+const kpi=(icon,l,v,s,c)=>`<div class="kpi" style="--c:${c}"><div class="ic">${icon}</div><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+const cagr=(a,b)=>(Math.pow(a/b,1/6)-1)*100;
+const sum=(a,k)=>a.reduce((s,r)=>s+(r[k]||0),0);
+const prov=name=>M.provinces.find(p=>p.province===name);
+
+const ICON={people:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><circle cx="8" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M2 20c0-4 3-6 6-6s6 2 6 6zM10 20c0-4 3-6 6-6s6 2 6 6z"/></svg>',
+ home:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>',city:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M3 21V9l6-3v15zm7 0V3l8 4v14zm9 0v-9l3 2v7z"/></svg>',
+ child:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="6" r="3"/><path d="M7 22v-6H5l2-6h10l2 6h-2v6z"/></svg>',book:'<svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M4 4h7a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H4zm16 0h-4a3 3 0 0 0-3 3v14a2 2 0 0 1 2-2h5z"/></svg>'};
+function infographics(){const n=M.national,perDay=(n.population-n.population_2017)/6/365,kids=D.reduce((s,r)=>s+r.pop_2023*r.age_0_14_pct/100,0),punj=prov("Punjab");
+ const ig=(bg,lab,num,desc,ic)=>`<div class="ig" style="background:${bg}"><div class="lab">${lab}</div><div class="bignum">${num}</div><div class="desc">${desc}</div>${ICON[ic]}</div>`;
+ $("ig-strip").innerHTML=ig("linear-gradient(135deg,#7c3aed,#c026d3)","People","241.5 M","5th most populous country in the world","people")
+  +ig("linear-gradient(135deg,#ec4899,#f97316)","Added every day",fmtN(perDay),"≈ "+Math.round(perDay/1440)+" new people every minute (2017-23 average)","child")
+  +ig("linear-gradient(135deg,#f97316,#f59e0b)","Children under 15",fmtP(kids),(kids/n.population*100).toFixed(0)+"% of the population is under 15","child")
+  +ig("linear-gradient(135deg,#14b8a6,#2563eb)","Live in cities",n.urban_pct.toFixed(1)+"%","cities grew 3.66%/yr vs 1.88%/yr in villages","city")
+  +ig("linear-gradient(135deg,#2563eb,#7c3aed)","Households",fmtP(n.households),n.avg_hh_size.toFixed(2)+" people per household on average","home");
+ // province cards with silhouettes
+ $("pcards").innerHTML=M.provinces.map(p=>{const f=PROV.features.find(x=>x.properties.province===p.province);
+  const pr=d3.geoMercator().fitSize([96,96],f),pth=d3.geoPath(pr)(f),id="g"+SH[p.province];
+  return `<div class="card"><div class="stripe" style="background:${PC[p.province]}"></div><div class="pc-head"><svg width="96" height="96" viewBox="0 0 96 96"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${PC[p.province]}"/><stop offset="1" stop-color="${PC[p.province]}" stop-opacity=".55"/></linearGradient></defs><path d="${pth}" fill="url(#${id})" stroke="#fff" stroke-width="1"/></svg>
+  <div><div class="pc-name">${EMO[p.province]} ${SH[p.province]}</div><div class="pc-pop" style="color:${PC[p.province]}">${fmtP(p.pop_2023)}</div><div style="font-size:.78rem;color:var(--ink3)">${p.share_pct.toFixed(1)}% of Pakistan</div></div></div>
+  <div class="stat"><span>Growth / yr</span><b>${p.growth_rate.toFixed(2)}%</b></div><div class="lbar"><i style="width:${p.growth_rate/3.5*100}%;background:${PC[p.province]}"></i></div>
+  <div class="stat"><span>Urban</span><b>${p.urban_pct.toFixed(1)}%</b></div><div class="lbar"><i style="width:${p.urban_pct}%;background:${PC[p.province]}"></i></div>
+  <div class="stat"><span>Literacy M / F</span><b>${p.literacy_male.toFixed(0)}% / ${p.literacy_female.toFixed(0)}%</b></div><div class="lbar"><i style="width:${p.literacy_male}%;background:#60a5fa"></i></div><div class="lbar"><i style="width:${p.literacy_female}%;background:#f472b6"></i></div>
+  <div class="stat"><span>Household size</span><b>${p.avg_hh_size.toFixed(2)}</b></div><div class="stat"><span>Children 0-14</span><b>${p.age_0_14_pct.toFixed(1)}%</b></div></div>`;}).join("");
+ // 100 people
+ const counts=M.provinces.map(p=>({p:p.province,n:Math.round(p.share_pct)}));let tot=counts.reduce((s,c)=>s+c.n,0);counts[0].n+=100-tot;
+ $("people").innerHTML=`<div class="people">${counts.map(c=>Array(Math.max(c.n,0)).fill(`<span style="background:${PC[c.p]}" title="${c.p}"></span>`).join("")).join("")}</div>`+
+  `<div class="legend-dots">${counts.map(c=>`<span><i style="background:${PC[c.p]}"></i>${SH[c.p]} ${c.n}</span>`).join("")}</div>`;
+ $("clock").innerHTML=M.provinces.map(p=>{const d=(p.pop_2023-p.pop_2017)/6/365;return `<div class="stat"><span>${EMO[p.province]} ${SH[p.province]}</span><b>+${fmtN(d)} people</b></div><div class="lbar"><i style="width:${d/perDay*100}%;background:${PC[p.province]}"></i></div>`;}).join("");
+ $("fastest").innerHTML=sortBy(D,"growth_rate").slice(0,6).map((r,i)=>`<div class="stat"><span>${i+1}. ${r.district} <span style="color:${PC[r.province]}">●</span> ${SH[r.province]}</span><b>${r.growth_rate.toFixed(2)}%/yr</b></div>`).join("");
+ $("bub-sel").onchange=bubbles;bubbles();
+}
+function bubbles(){const k=$("bub-sel").value,svg=d3.select("#bubblemap"),W=svg.node().clientWidth||700,H=560;svg.attr("viewBox",`0 0 ${W} ${H}`);svg.selectAll("*").remove();
+ const pr=d3.geoMercator().fitExtent([[10,10],[W-10,H-10]],PROV),path=d3.geoPath(pr);
+ svg.append("g").selectAll("path").data(PROV.features).join("path").attr("d",path).attr("fill",d=>d.properties.in_census?(PC[d.properties.province]+"1f"):"#e2e8f0").attr("stroke",d=>PC[d.properties.province]||"#cbd5e1").attr("stroke-width",1.2);
+ const rs=d3.scaleSqrt().domain([0,d3.max(D,r=>r.pop_2023)]).range([0,34]);
+ let col,leg;
+ if(k==="province"){col=r=>PC[r.province];leg=Object.keys(PC).map(p=>`<span><i style="background:${PC[p]}"></i>${SH[p]}</span>`).join("");}
+ else{const vals=D.map(r=>r[k]),ext=k==="growth_rate"?[0.5,5]:d3.extent(vals);const sc=d3.scaleSequential(d3.interpolatePlasma).domain([ext[1],ext[0]]);col=r=>sc(Math.max(ext[0],Math.min(ext[1],r[k])));
+  leg=`<span>${IND[k][0]}:</span>`+[0,.25,.5,.75,1].map(t=>{const v=ext[0]+t*(ext[1]-ext[0]);return `<span><i style="background:${sc(v)}"></i>${IND[k][1](v)}</span>`;}).join("");}
+ const tip=d3.select("body").selectAll("div.btip").data([0]).join("div").attr("class","btip gtip").style("position","fixed");
+ svg.append("g").selectAll("circle").data([...D].filter(r=>r.lon!=null).sort((a,b)=>b.pop_2023-a.pop_2023)).join("circle").attr("cx",r=>pr([r.lon,r.lat])[0]).attr("cy",r=>pr([r.lon,r.lat])[1]).attr("r",0)
+  .attr("fill",col).attr("fill-opacity",.82).attr("stroke","#fff").attr("stroke-width",1.2)
+  .on("mousemove",(e,r)=>tip.style("display","block").style("left",e.clientX+12+"px").style("top",e.clientY+12+"px").html(`<b>${r.district}</b> · ${SH[r.province]}<br>${fmtN(r.pop_2023)} people<br>Growth ${r.growth_rate.toFixed(2)}% · Urban ${r.urban_pct.toFixed(1)}% · Literacy ${r.literacy_rate.toFixed(1)}%`))
+  .on("mouseleave",()=>tip.style("display","none"))
+  .transition().duration(900).delay((r,i)=>i*6).attr("r",r=>Math.max(2.5,rs(r.pop_2023)));
+ $("bub-legend").innerHTML=leg;}
+
+
+infographics();
+</script></body></html>

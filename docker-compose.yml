@@ -1,0 +1,17 @@
+services:
+  censusinsight:
+    build: .
+    image: censusinsight-pk:latest
+    container_name: censusinsight-pk
+    ports:
+      - "8501:8501"
+    environment:
+      - STUDENT_NAME=Student
+      - SUPERVISOR_NAME=Supervisor
+      # Optional - enables the LLM brain of the AI agent (any OpenAI-compatible API)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+    volumes:
+      - ./reports:/app/reports   # generated PDFs are kept on the host
+    restart: unless-stopped

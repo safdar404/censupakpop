@@ -1,0 +1,14 @@
+streamlit==1.67.0
+pandas>=2.2
+numpy>=1.26
+openpyxl>=3.1
+plotly>=5.22
+matplotlib>=3.8
+scikit-learn>=1.5
+joblib>=1.4
+folium>=0.17
+streamlit-folium>=0.22
+branca>=0.7
+fpdf2>=2.7.9
+pillow>=10.0
+openai>=1.40

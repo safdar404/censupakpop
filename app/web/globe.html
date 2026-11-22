@@ -1,0 +1,252 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>
+:root{
+ --ink:#0f172a;--ink2:#475569;--ink3:#64748b;--line:#e8eaf2;--bg:#f6f7fb;--card:#fff;
+ --punjab:#2563eb;--sindh:#f43f5e;--kp:#10b981;--balochistan:#f59e0b;--ict:#8b5cf6;
+ --violet:#7c3aed;--fuchsia:#d946ef;--pink:#ec4899;--orange:#f97316;--teal:#14b8a6;--green:#00a86b;
+ --grad:linear-gradient(120deg,#7c3aed 0%,#d946ef 45%,#f97316 100%);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Plus Jakarta Sans",Inter,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 22px 60px}
+/* ---------- hero */
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:28px 32px;color:#fff;
+ background:radial-gradient(600px 300px at 10% 0%,rgba(217,70,239,.55),transparent 60%),radial-gradient(700px 360px at 95% 10%,rgba(249,115,22,.45),transparent 60%),
+ radial-gradient(800px 400px at 60% 120%,rgba(20,184,166,.45),transparent 60%),linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%)}
+.hero:after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.18) 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(90deg,transparent,#000 70%);pointer-events:none}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;font-weight:700;color:#f5d0fe}
+.hero h1{margin:6px 0 6px;font-size:2.3rem;font-weight:800;letter-spacing:-.02em}
+.hero h1 span{background:linear-gradient(90deg,#fde68a,#f9a8d4,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;color:#e0e7ff;max-width:800px;line-height:1.55}
+.chip{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 13px;font-size:.78rem;margin:14px 6px 0 0;backdrop-filter:blur(4px)}
+/* ---------- nav */
+nav{position:sticky;top:0;z-index:1000;background:rgba(246,247,251,.9);backdrop-filter:blur(10px);margin:14px -22px 18px;padding:10px 22px;display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line)}
+nav a{white-space:nowrap;text-decoration:none;color:var(--ink2);font-weight:700;font-size:.84rem;padding:8px 14px;border-radius:999px;transition:.15s}
+nav a:hover{background:#eef0f8;color:var(--ink)}
+nav a.on{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+nav a.new:after{content:"NEW";font-size:.58rem;margin-left:6px;padding:1px 5px;border-radius:4px;background:#fde68a;color:#92400e;vertical-align:2px}
+nav a.on.new:after{background:rgba(255,255,255,.3);color:#fff}
+.view{display:none;animation:fade .35s ease}.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:1.7rem;font-weight:800;margin:2px 0 4px;letter-spacing:-.01em}
+.mod{display:inline-block;font-weight:800;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--ink2);margin:0 0 16px;line-height:1.5}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}.g32{grid-template-columns:3fr 2fr}.g23{grid-template-columns:2fr 3fr}
+@media(max-width:640px){.g5{grid-template-columns:repeat(2,1fr)}.g4,.g3{grid-template-columns:1fr 1fr}.g2,.g32,.g23{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px -12px rgba(76,29,149,.12)}
+.card h3{margin:0 0 10px;font-size:1rem;font-weight:800}
+.kpi{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;overflow:hidden;box-shadow:0 8px 24px -14px rgba(76,29,149,.25)}
+.kpi:before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--c,var(--violet))}
+.kpi .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:18px;margin-bottom:10px;background:color-mix(in srgb,var(--c) 14%,#fff)}
+.kpi .l{color:var(--ink2);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kpi .v{font-size:clamp(1.3rem,2.3vw,1.95rem);font-weight:800;margin-top:2px;letter-spacing:-.02em}
+.kpi .s{color:var(--ink3);font-size:.8rem}
+.chart{width:100%;height:390px}
+.insight{border-left:4px solid var(--violet);background:linear-gradient(90deg,#f5f3ff,#fff);padding:10px 14px;border-radius:0 12px 12px 0;margin:7px 0;line-height:1.5}
+.insight.ai{border-left-color:var(--fuchsia);background:linear-gradient(90deg,#fdf4ff,#fff)}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th{text-align:left;color:var(--ink2);font-weight:700;border-bottom:1px solid var(--line);padding:7px 8px;position:sticky;top:0;background:#fff;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+td{padding:7px 8px;border-bottom:1px solid #f1f2f7}
+tr:hover td{background:#faf8ff}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{max-height:360px;overflow:auto}
+select,input[type=text]{font:inherit;padding:9px 12px;border:1px solid #d9dcea;border-radius:12px;background:#fff;min-width:200px}
+input[type=range]{width:100%;accent-color:var(--violet)}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;background:var(--grad);color:#fff;cursor:pointer;box-shadow:0 6px 16px -6px rgba(217,70,239,.6)}
+button.ghost{background:#fff;color:var(--ink);border:1px solid #d9dcea;font-weight:600;font-size:.84rem;padding:8px 10px;text-align:left;box-shadow:none}
+button.ghost:hover{border-color:var(--violet);color:var(--violet)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+/* ---------- globe */
+.globe-card{position:relative;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 50% 45%,#1e1b4b 0%,#0b1026 55%,#050816 100%);min-height:600px;color:#e2e8f0}
+.globe-card .stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#c4b5fd,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#fff,transparent),radial-gradient(1px 1px at 85% 65%,#f9a8d4,transparent),radial-gradient(1px 1px at 10% 70%,#a5f3fc,transparent),radial-gradient(1px 1px at 55% 50%,#fff,transparent),radial-gradient(1px 1px at 92% 90%,#fff,transparent),radial-gradient(1px 1px at 30% 10%,#fde68a,transparent);background-size:300px 300px;opacity:.7;animation:twinkle 6s ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.35}}
+#globe{display:block;margin:0 auto;cursor:grab;position:relative}
+#globe:active{cursor:grabbing}
+.globe-ui{position:absolute;left:22px;top:20px;z-index:2;max-width:330px}
+.globe-ui h3{margin:0;font-size:1.35rem;font-weight:800;color:#fff}
+.globe-ui p{margin:6px 0 12px;color:#c7d2fe;font-size:.9rem;line-height:1.5}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:6px 12px;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:none}
+.pchip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pchip.on{background:rgba(255,255,255,.2);border-color:#fff}
+.gbtns{position:absolute;left:22px;bottom:20px;z-index:2;display:flex;gap:8px}
+.gbtns button{padding:8px 14px;font-size:.84rem}
+.gbtns button.dim{background:rgba(255,255,255,.12);box-shadow:none;border:1px solid rgba(255,255,255,.25)}
+.pcard{position:absolute;right:22px;top:20px;z-index:2;width:290px;background:rgba(15,23,42,.72);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px);border-radius:18px;padding:16px;transition:.25s}
+.pcard .t{font-size:1.15rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.pcard .t i{width:12px;height:12px;border-radius:50%}
+.pcard .big{font-size:2rem;font-weight:800;margin:6px 0 2px;color:#fff}
+.pcard .mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pcard .mini div{background:rgba(255,255,255,.07);border-radius:10px;padding:8px}
+.pcard .mini b{display:block;font-size:1.05rem;color:#fff}
+.pcard .mini span{font-size:.72rem;color:#c7d2fe;text-transform:uppercase;letter-spacing:.05em}
+.bar{height:8px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:4px}
+.bar > i{display:block;height:100%;border-radius:6px}
+.gtip{position:absolute;pointer-events:none;background:#0f172a;color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 10px;border-radius:8px;font-size:.8rem;display:none;z-index:3}
+/* ---------- infographics */
+.bignum{font-size:2.2rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.ig{border-radius:20px;padding:18px;color:#fff;position:relative;overflow:hidden;min-height:150px}
+.ig .lab{font-size:.78rem;opacity:.9;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.ig .desc{font-size:.85rem;opacity:.92;margin-top:6px;line-height:1.4}
+.ig svg.ico{position:absolute;right:-8px;bottom:-8px;width:96px;height:96px;opacity:.22}
+.pcards .card{position:relative;overflow:hidden}
+.pcards .card .stripe{position:absolute;inset:0 0 auto 0;height:6px}
+.pc-head{display:flex;gap:12px;align-items:center}
+.pc-head svg{flex:0 0 96px}
+.pc-name{font-weight:800;font-size:1.1rem}
+.pc-pop{font-size:1.32rem;white-space:nowrap;font-weight:800;letter-spacing:-.02em}
+.stat{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ink2);margin-top:8px}
+.stat b{color:var(--ink)}
+.lbar{height:8px;border-radius:6px;background:#eef0f8;overflow:hidden;margin-top:3px}
+.lbar i{display:block;height:100%;border-radius:6px}
+.people{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px}
+.people span{width:14px;height:14px;border-radius:50%;display:inline-block}
+#bubblemap{width:100%;height:560px}
+#map{height:600px;border-radius:18px;border:1px solid var(--line);background:#eef1f8}
+.legend{background:rgba(255,255,255,.96);border:1px solid #d9dcea;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.6;box-shadow:0 6px 16px -8px rgba(0,0,0,.2)}
+.legend i{display:inline-block;width:22px;height:12px;border-radius:3px;margin-right:8px;vertical-align:middle}
+.chat{height:440px;overflow:auto;padding:4px}
+.msg{padding:10px 14px;border-radius:14px;margin:8px 0;line-height:1.5}
+.msg.u{background:var(--grad);color:#fff;margin-left:20%}
+.msg.a{background:#fff;border:1px solid var(--line);margin-right:5%}
+.badge{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 9px;border-radius:999px;background:#fef3c7;color:#92400e;vertical-align:middle}
+.foot{margin-top:30px;color:var(--ink3);font-size:.82rem;border-top:1px solid var(--line);padding-top:14px;line-height:1.6}
+.loading{padding:60px;text-align:center;color:var(--ink2)}
+.legend-dots{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--ink2);margin-top:6px}
+.legend-dots i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+</style><style>body{background:transparent;margin:0}.wrap{padding:0}</style></head><body><div class="globe-card" id="globe-card">
+      <div class="stars"></div>
+      <div class="globe-ui">
+        <div class="eyebrow" style="color:#f0abfc">Interactive 3D globe</div>
+        <h3>Pakistan from orbit</h3>
+        <p>Drag to spin, scroll to zoom. Pick a province to fly there and see its census profile.</p>
+        <div class="pchips" id="pchips"></div>
+      </div>
+      <div class="pcard" id="pcard"></div>
+      <svg id="globe"></svg>
+      <div class="gbtns"><button id="fly">✈️ Fly to Pakistan</button><button class="dim" id="spin">⟳ Auto-spin</button><button class="dim" id="tour">▶ Province tour</button></div>
+      <div class="gtip" id="gtip"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script><script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script><script>
+const __D=__DATA__;let D=__D.districts,M=__D.meta,PROV=__D.provinces,WORLD=__D.world;
+const PC={"Punjab":"#2563eb","Sindh":"#f43f5e","Khyber Pakhtunkhwa":"#10b981","Balochistan":"#f59e0b","Islamabad (ICT)":"#8b5cf6"};
+const SH={"Punjab":"Punjab","Sindh":"Sindh","Khyber Pakhtunkhwa":"KP","Balochistan":"Balochistan","Islamabad (ICT)":"ICT"};
+const EMO={"Punjab":"🌾","Sindh":"🌊","Khyber Pakhtunkhwa":"⛰️","Balochistan":"🏜️","Islamabad (ICT)":"🏛️"};
+const VIBE=["#7c3aed","#ec4899","#f97316","#14b8a6","#2563eb","#f59e0b","#10b981","#f43f5e"];
+const PLASMA=["#fde047","#fb923c","#f43f5e","#c026d3","#5b21b6"];
+const IND={pop_2023:["Total population (2023)",v=>fmtN(v)],density:["Density (people / km²)",v=>fmtN(v)],growth_rate:["Annual growth 2017-23 (%)",v=>v.toFixed(2)+"%"],
+ urban_pct:["Urban population (%)",v=>v.toFixed(1)+"%"],females_per_100_males:["Females per 100 males",v=>v.toFixed(1)],avg_hh_size:["Average household size",v=>v.toFixed(2)],
+ literacy_rate:["Literacy rate 10+ (%)",v=>v.toFixed(1)+"%"],literacy_female:["Female literacy (%)",v=>v.toFixed(1)+"%"],age_0_14_pct:["Children 0-14 (%)",v=>v.toFixed(1)+"%"],
+ urbanisation_change_pp:["Urbanisation change 2017-23 (pp)",v=>v.toFixed(1)]};
+let G={};
+const fmtN=v=>Math.round(v).toLocaleString("en-US");
+const fmtP=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+" M":Math.abs(v)>=1e3?(v/1e3).toFixed(1)+" K":Math.round(v)+"";
+const $=id=>document.getElementById(id);
+const L0={font:{family:"Plus Jakarta Sans, Inter, Segoe UI, sans-serif",size:13,color:"#0f172a"},paper_bgcolor:"rgba(0,0,0,0)",plot_bgcolor:"rgba(0,0,0,0)",margin:{l:10,r:10,t:62,b:10},
+ xaxis:{gridcolor:"#eef0f6",zerolinecolor:"#e2e5ef",automargin:true},yaxis:{gridcolor:"#eef0f6",zerolinecolor:"#e2e5ef",automargin:true},legend:{orientation:"h",x:1,xanchor:"right",y:1.0,yanchor:"bottom"},
+ hoverlabel:{bgcolor:"#0f172a",bordercolor:"#0f172a",font:{color:"#fff"}},title:{x:0,xanchor:"left",y:0.97,font:{size:15,color:"#0f172a"}},colorway:VIBE};
+function plot(id,data,layout={}){const l=JSON.parse(JSON.stringify(L0));for(const k in layout){if(typeof layout[k]==="object"&&!Array.isArray(layout[k])&&l[k])Object.assign(l[k],layout[k]);else l[k]=layout[k];}
+ Plotly.react(id,data,l,{displaylogo:false,responsive:true,modeBarButtonsToRemove:["lasso2d","select2d"]});}
+function table(rows,cols){return "<table><tr>"+cols.map(c=>`<th class="${c[2]?'n':''}">${c[1]}</th>`).join("")+"</tr>"+rows.map((r,i)=>"<tr>"+cols.map(c=>`<td class="${c[2]?'n':''}">${c[0]==='#'?i+1:(c[2]?c[2](r[c[0]]):r[c[0]])}</td>`).join("")+"</tr>").join("")+"</table>";}
+const sortBy=(arr,k,asc)=>[...arr].filter(r=>r[k]!=null).sort((a,b)=>asc?a[k]-b[k]:b[k]-a[k]);
+const kpi=(icon,l,v,s,c)=>`<div class="kpi" style="--c:${c}"><div class="ic">${icon}</div><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+const cagr=(a,b)=>(Math.pow(a/b,1/6)-1)*100;
+const sum=(a,k)=>a.reduce((s,r)=>s+(r[k]||0),0);
+const prov=name=>M.provinces.find(p=>p.province===name);
+
+function buildGlobe(){
+ const card=$("globe-card"),W=card.clientWidth,H=600,R=Math.min(W*0.42,262);
+ const svg=d3.select("#globe").attr("width",W).attr("height",H).attr("viewBox",`0 0 ${W} ${H}`);
+ svg.selectAll("*").remove();
+ const defs=svg.append("defs");
+ const oc=defs.append("radialGradient").attr("id","ocean").attr("cx","38%").attr("cy","32%").attr("r","75%");
+ oc.append("stop").attr("offset","0%").attr("stop-color","#3b4cca");oc.append("stop").attr("offset","55%").attr("stop-color","#1e1b6b");oc.append("stop").attr("offset","100%").attr("stop-color","#0b0a33");
+ const at=defs.append("radialGradient").attr("id","atmo");[[0.86,"rgba(167,139,250,0)"],[0.94,"rgba(167,139,250,.35)"],[1,"rgba(236,72,153,0)"]].forEach(([o,c])=>at.append("stop").attr("offset",o).attr("stop-color",c));
+ const glow=defs.append("filter").attr("id","glow").attr("x","-50%").attr("y","-50%").attr("width","200%").attr("height","200%");
+ glow.append("feGaussianBlur").attr("stdDeviation",4).attr("result","b");const fm=glow.append("feMerge");fm.append("feMergeNode").attr("in","b");fm.append("feMergeNode").attr("in","SourceGraphic");
+ const cx=W>900?W*0.5:W/2,cy=H/2+10;
+ const proj=d3.geoOrthographic().scale(R).translate([cx,cy]).clipAngle(90).rotate([-20,-15]);
+ const path=d3.geoPath(proj);
+ svg.append("circle").attr("cx",cx).attr("cy",cy).attr("r",R*1.16).attr("fill","url(#atmo)");
+ svg.append("path").datum({type:"Sphere"}).attr("class","sphere").attr("fill","url(#ocean)").attr("stroke","rgba(165,180,252,.5)");
+ svg.append("path").datum(d3.geoGraticule10()).attr("class","grat").attr("fill","none").attr("stroke","rgba(199,210,254,.13)");
+ const land=topojson.feature(WORLD,WORLD.objects.countries).features;
+ svg.append("g").selectAll("path").data(land).join("path").attr("class","country").attr("fill",d=>d.properties.name==="Pakistan"?"#22305e":"#2e3a73").attr("stroke","rgba(199,210,254,.35)").attr("stroke-width",.5);
+ const provs=svg.append("g").selectAll("path").data(PROV.features).join("path").attr("class","prov")
+  .attr("fill",d=>PC[d.properties.province]||"#94a3b8").attr("fill-opacity",d=>d.properties.in_census?.92:.55)
+  .attr("stroke","#fff").attr("stroke-width",.8).style("cursor","pointer")
+  .on("mousemove",(e,d)=>{const t=$("gtip"),r=card.getBoundingClientRect();const p=prov(d.properties.province);
+     t.style.display="block";t.style.left=(e.clientX-r.left+12)+"px";t.style.top=(e.clientY-r.top+12)+"px";
+     t.innerHTML=p?`<b>${d.properties.province}</b><br>${fmtP(p.pop_2023)} people · ${p.share_pct.toFixed(1)}%`:`<b>${d.properties.province}</b><br>not in PBS census tables`;})
+  .on("mouseleave",()=>$("gtip").style.display="none")
+  .on("click",(e,d)=>{if(PC[d.properties.province])focusProvince(d.properties.province);});
+ const pulse=svg.append("g");
+ const labels=svg.append("g").style("pointer-events","none");
+ G={svg,proj,path,R,cx,cy,provs,pulse,labels,spinning:true,selected:null,scale:R};
+ // label cities
+ const cities=[["Karachi",67.01,24.86],["Lahore",74.35,31.55],["Islamabad",73.05,33.68],["Peshawar",71.58,34.01],["Quetta",67.0,30.18]];
+ G.cities=cities;
+ function render(){svg.selectAll("path.sphere,path.grat,path.country,path.prov").attr("d",path);
+  // labels for provinces + cities only when facing us
+  const r=proj.rotate(),centre=[-r[0],-r[1]];
+  const vis=ll=>d3.geoDistance(ll,centre)<1.35;
+  labels.selectAll("text.pl").data(PROV.features.filter(f=>f.properties.in_census&&f.properties.province!=="Islamabad (ICT)"),d=>d.properties.province).join("text").attr("class","pl")
+   .attr("text-anchor","middle").attr("font-size",G.scale>R*1.6?13:11).attr("font-weight",800).attr("fill","#fff").attr("stroke","rgba(15,23,42,.65)").attr("stroke-width",3).attr("paint-order","stroke")
+   .attr("transform",d=>{const p=proj([d.properties.label_lon,d.properties.label_lat]);return `translate(${p[0]},${p[1]})`;})
+   .style("display",d=>vis([d.properties.label_lon,d.properties.label_lat])&&G.scale>R*1.25?null:"none").text(d=>SH[d.properties.province]);
+  labels.selectAll("g.city").data(cities).join(enter=>{const g=enter.append("g").attr("class","city");g.append("circle").attr("r",3).attr("fill","#fde047").attr("stroke","#0f172a");g.append("text").attr("x",6).attr("y",4).attr("font-size",10.5).attr("fill","#fef9c3").attr("stroke","rgba(15,23,42,.7)").attr("stroke-width",3).attr("paint-order","stroke").text(d=>d[0]);return g;})
+   .attr("transform",d=>{const p=proj([d[1],d[2]]);return `translate(${p[0]},${p[1]})`;}).style("display",d=>vis([d[1],d[2]])&&G.scale>R*5?null:"none");
+  // pulse ring over Pakistan
+  const pk=[69.3,30.0],pp=proj(pk);
+  pulse.selectAll("circle").data(vis(pk)?[0,1]:[]).join("circle").attr("cx",pp[0]).attr("cy",pp[1]).attr("fill","none").attr("stroke","#f0abfc").attr("stroke-width",2);
+ }
+ G.render=render;
+ // pulse animation
+ d3.timer(t=>{const k=(t%2000)/2000;pulse.selectAll("circle").attr("r",(d,i)=>{const kk=(k+i*.5)%1;return 8+kk*G.scale*0.22;}).attr("opacity",(d,i)=>{const kk=(k+i*.5)%1;return 1-kk;});
+  if(G.spinning){const r=proj.rotate();proj.rotate([r[0]+0.18,r[1]]);render();}});
+ svg.call(d3.drag().on("start",()=>{G.spinning=false;setBtn();}).on("drag",e=>{const r=proj.rotate(),k=75/proj.scale();proj.rotate([r[0]+e.dx*k,Math.max(-80,Math.min(80,r[1]-e.dy*k))]);render();}));
+ svg.on("wheel",e=>{e.preventDefault();G.scale=Math.max(R*0.8,Math.min(R*8,G.scale*(e.deltaY<0?1.12:0.89)));proj.scale(G.scale);render();},{passive:false});
+ render();
+ $("pchips").innerHTML=Object.keys(PC).map(p=>`<button class="pchip" data-p="${p}"><i style="background:${PC[p]}"></i>${SH[p]}</button>`).join("");
+ document.querySelectorAll(".pchip").forEach(b=>b.onclick=()=>focusProvince(b.dataset.p));
+ $("fly").onclick=()=>flyTo([69.3,30.0],R*3.1,null);
+ $("spin").onclick=()=>{G.spinning=!G.spinning;if(G.spinning){G.scale=R;proj.scale(R);}setBtn();};
+ $("tour").onclick=tour;
+ showCard(null);
+ setTimeout(()=>{if(G.spinning)flyTo([69.3,30.0],R*3.1,null);},3500);
+}
+function setBtn(){$("spin").textContent=G.spinning?"⏸ Pause spin":"⟳ Auto-spin";}
+function flyTo(ll,scale,provName){
+ G.spinning=false;setBtn();const p=G.proj,r0=p.rotate(),r1=[-ll[0],-ll[1]],s0=p.scale();
+ const ri=d3.interpolate(r0,r1),si=d3.interpolate(s0,scale);
+ d3.transition().duration(1800).ease(d3.easeCubicInOut).tween("fly",()=>t=>{p.rotate(ri(t));G.scale=si(t);p.scale(G.scale);G.render();});
+ G.selected=provName;highlight();showCard(provName);
+}
+function focusProvince(name){const f=PROV.features.find(x=>x.properties.province===name);const c=d3.geoCentroid(f);
+ const b=d3.geoBounds(f),span=Math.max(b[1][0]-b[0][0],b[1][1]-b[0][1]);const scale=Math.min(G.R*24,Math.max(G.R*3.2,G.R*3.1*(14/Math.max(span,0.6))));
+ flyTo(name==="Islamabad (ICT)"?[73.05,33.65]:c,name==="Islamabad (ICT)"?G.R*14:scale,name);}
+function highlight(){const s=G.selected;
+ G.provs.transition().duration(500).attr("fill-opacity",d=>!s?(d.properties.in_census?.92:.55):(d.properties.province===s?1:.28)).attr("stroke-width",d=>d.properties.province===s?2.2:.8)
+  .attr("filter",d=>d.properties.province===s?"url(#glow)":null);
+ document.querySelectorAll(".pchip").forEach(b=>b.classList.toggle("on",b.dataset.p===s));}
+let tourTimer=null;
+function tour(){const names=Object.keys(PC);let i=0;clearInterval(tourTimer);focusProvince(names[0]);$("tour").textContent="⏹ Stop tour";
+ $("tour").onclick=()=>{clearInterval(tourTimer);$("tour").textContent="▶ Province tour";$("tour").onclick=tour;};
+ tourTimer=setInterval(()=>{i++;if(i>=names.length){clearInterval(tourTimer);$("tour").textContent="▶ Province tour";$("tour").onclick=tour;flyTo([69.3,30.0],G.R*3.1,null);return;}focusProvince(names[i]);},4200);}
+function showCard(name){const c=$("pcard");
+ if(!name){const n=M.national;c.innerHTML=`<div class="t"><i style="background:linear-gradient(135deg,#01411c 70%,#fff 70%)"></i>Pakistan</div><div style="color:#c7d2fe;font-size:.8rem">Census 2023 · 136 districts</div><div class="big">${fmtP(n.population)}</div>
+  <div style="color:#c7d2fe;font-size:.85rem">+${fmtP(n.population-n.population_2017)} since 2017 (${n.growth_rate.toFixed(2)}%/yr)</div>
+  <div class="mini"><div><span>Urban</span><b>${n.urban_pct.toFixed(1)}%</b></div><div><span>Literacy</span><b>${n.literacy_rate.toFixed(1)}%</b></div><div><span>Households</span><b>${fmtP(n.households)}</b></div><div><span>Density</span><b>${n.density.toFixed(0)}/km²</b></div></div>
+  <div style="margin-top:12px;font-size:.75rem;color:#c7d2fe">Population share</div>${M.provinces.map(p=>`<div style="display:flex;justify-content:space-between;font-size:.78rem;margin-top:5px"><span>${SH[p.province]}</span><span>${p.share_pct.toFixed(1)}%</span></div><div class="bar"><i style="width:${p.share_pct}%;background:${PC[p.province]}"></i></div>`).join("")}`;return;}
+ const p=prov(name),dist=sortBy(D.filter(r=>r.province===name),"pop_2023").slice(0,3);
+ c.innerHTML=`<div class="t"><i style="background:${PC[name]}"></i>${EMO[name]} ${name}</div><div style="color:#c7d2fe;font-size:.8rem">${p.districts} districts · ${fmtN(p.area_sqkm)} km²</div>
+  <div class="big">${fmtP(p.pop_2023)}</div><div style="color:#c7d2fe;font-size:.85rem">${p.share_pct.toFixed(1)}% of Pakistan · +${p.growth_rate.toFixed(2)}%/yr</div>
+  <div class="mini"><div><span>Urban</span><b>${p.urban_pct.toFixed(1)}%</b></div><div><span>Density</span><b>${p.density.toFixed(0)}/km²</b></div><div><span>Household</span><b>${p.avg_hh_size.toFixed(2)}</b></div><div><span>F / 100 M</span><b>${p.females_per_100_males.toFixed(1)}</b></div></div>
+  <div style="margin-top:10px;font-size:.75rem;color:#c7d2fe">Literacy: male ${p.literacy_male.toFixed(1)}% · female ${p.literacy_female.toFixed(1)}%</div>
+  <div class="bar"><i style="width:${p.literacy_male}%;background:#60a5fa"></i></div><div class="bar"><i style="width:${p.literacy_female}%;background:#f472b6"></i></div>
+  <div style="margin-top:10px;font-size:.75rem;color:#c7d2fe">Largest districts</div>${dist.map(d=>`<div style="display:flex;justify-content:space-between;font-size:.82rem;margin-top:3px"><span>${d.district}</span><b>${fmtP(d.pop_2023)}</b></div>`).join("")}`;}
+
+
+buildGlobe();
+</script></body></html>
